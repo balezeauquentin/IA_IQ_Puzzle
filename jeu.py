@@ -70,10 +70,14 @@ piece_Z2 = [
 
 # Fonction pour placer une pièce sur le plateau
 def placer_piece(plateau, piece, position):
-    for i in range(len(piece)):
-        for j in range(len(piece[0])):
-            if piece[i][j] != 0:
-                plateau[position[0] + i][position[1] + j] = piece[i][j]
+    if peut_placer_piece(plateau, piece, position):
+        for i in range(len(piece)):
+            for j in range(len(piece[0])):
+                if piece[i][j] != 0:
+                    plateau[position[0] + i][position[1] + j] = piece[i][j]
+        return True
+    else:
+        return False
 # Fonction pour vérifier si une pièce peut être placée à un certain endroit
 def peut_placer_piece(plateau, piece, position):
     for i in range(len(piece)):
@@ -105,6 +109,8 @@ def afficher_plateau(plateau):
         print(ligne_affichee)
 
 
-piece_L = tourner_piece_horraire(piece_L)
-placer_piece(plateau, piece_L, (1, 1))
-afficher_plateau(plateau)
+position = (2, 0)
+if placer_piece(plateau, piece_L, position):
+    afficher_plateau(plateau)
+else:
+    print("Impossible de placer la pièce")
