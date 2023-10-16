@@ -4,6 +4,9 @@ class plateau:
         self.hauteur = hauteur
         self.largeur = largeur
         self.plateau = [[0 for _ in range(largeur)] for _ in range(hauteur)]
+    def __copy__(self):
+        return plateau(self.hauteur, self.largeur)
+
 
     def __len__(self):
         return self.hauteur
@@ -61,15 +64,14 @@ class piece:
         elif id == 5:
             # 5 = U
             self.piece = [
-                [5, 5, 5],
-                [5, 0, 0],
-                [5, 5, 5]
+                [5, 5],
+                [5, 0],
+                [5, 5]
             ]
         elif id == 6:
             # 6 = T
             self.piece = [
                 [6, 6, 6],
-                [0, 6, 0],
                 [0, 6, 0]
             ]
         elif id == 7:
@@ -104,6 +106,11 @@ class piece:
                 [11, 11, 11, 0],
                 [0, 0, 11, 11],
             ]
+        elif id ==12:
+            self.piece = [[12,12,0],
+                          [0,12,12],
+                          [0,0,12]]
+
 
 
 # Fonction pour placer une pièce sur le plateau
