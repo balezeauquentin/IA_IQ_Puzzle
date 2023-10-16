@@ -75,8 +75,10 @@ def placer_piece(plateau, piece, position):
             for j in range(len(piece[0])):
                 if piece[i][j] != 0:
                     plateau[position[0] + i][position[1] + j] = piece[i][j]
+        afficher_plateau(plateau)
         return True
     else:
+        print("Impossible de placer la pièce ici")
         return False
 # Fonction pour vérifier si une pièce peut être placée à un certain endroit
 def peut_placer_piece(plateau, piece, position):
@@ -108,9 +110,7 @@ def afficher_plateau(plateau):
 
         print(ligne_affichee)
 
-
-position = (2, 0)
-if placer_piece(plateau, piece_L, position):
-    afficher_plateau(plateau)
-else:
-    print("Impossible de placer la pièce")
+position = (4,0)
+placer_piece(plateau, piece_L, position)
+placer_piece(plateau, piece_L2, position)
+placer_piece(plateau, piece_L3, position)
