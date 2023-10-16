@@ -1,106 +1,148 @@
 # Création du plateau
-hauteur = 5
-largeur = 11
-plateau = [[0 for _ in range(largeur)] for _ in range(hauteur)]
+class plateau:
+    def __init__(self, hauteur, largeur):
+        self.hauteur = hauteur
+        self.largeur = largeur
+        self.plateau = [[0 for _ in range(largeur)] for _ in range(hauteur)]
+
+    def __len__(self):
+        return self.hauteur
+
+    def __getitem__(self, i):
+        return self.plateau[i]
+
+    def __setitem__(self, i, val):
+        self.plateau[i] = val
+
+    def afficher_tableau_console(self):
+        for i in range(self.hauteur):
+            for j in range(self.largeur):
+                if self.plateau[i][j] == 0:
+                    print(" . ", end="")
+                else:
+                    print(" " + chr(ord('A') + self.plateau[i][j] - 1) + " ", end="")
+            print("\n")
+
 
 # Création d'une pièce (exemple avec une pièce en forme de L)
-piece_L = [
-    [1, 0],
-    [1, 0],
-    [1, 1]
-]
+class piece:
+    def __init__(self, id):
+        self.id = id
 
-piece_L2 = [
-    [2, 0],
-    [2, 0],
-    [2, 0],
-    [2, 2]
-]
+        # Liste des pièces
+        if id == 1:
+            # 1 = L
+            self.piece = [
+                [1, 0],
+                [1, 0],
+                [1, 1]
+            ]
+        elif id == 2:
+            # 2 = L2
+            self.piece = [
+                [2, 0],
+                [2, 0],
+                [2, 0],
+                [2, 2]
+            ]
+        elif id == 3:
+            # 3 = L3
+            self.piece = [
+                [3, 0],
+                [3, 3],
+            ]
+        elif id == 4:
+            # 4 = L4
+            self.piece = [
+                [4, 0, 0],
+                [4, 0, 0],
+                [4, 4, 4]
+            ]
+        elif id == 5:
+            # 5 = U
+            self.piece = [
+                [5, 5, 5],
+                [5, 0, 0],
+                [5, 5, 5]
+            ]
+        elif id == 6:
+            # 6 = T
+            self.piece = [
+                [6, 6, 6],
+                [0, 6, 0],
+                [0, 6, 0]
+            ]
+        elif id == 7:
+            # 7 = Z
+            self.piece = [
+                [7, 7, 0],
+                [0, 7, 7],
+            ]
+        elif id == 8:
+            # 8 = Z2
+            self.piece = [
+                [8, 8, 8, 8],
+                [0, 8, 0, 0]
+            ]
+        elif id == 9:
+            # 9 = truc
+            self.piece = [
+                [0, 0, 9],
+                [9, 9, 9],
+                [0, 9, 0]
+            ]
+        elif id == 10:
+            # 10 = C
+            self.piece = [
+                [10, 0],
+                [10, 10],
+                [10, 10]
+            ]
+        elif id == 11:
+            # 11 = Z2
+            self.piece = [
+                [11, 11, 11, 0],
+                [0, 0, 11, 11],
+            ]
 
-piece_L3 = [
-    [3, 0],
-    [3, 3],
-]
-
-piece_L4 = [
-    [4, 0, 0],
-    [4, 0, 0],
-    [4, 4, 4]
-]
-
-piece_U = [
-    [5, 5, 5],
-    [5, 0, 0],
-    [5, 5, 5]
-]
-
-piece_T = [
-    [6, 6, 6],
-    [0, 6, 0],
-    [0, 6, 0]
-]  
-
-piece_Z = [
-    [7, 7, 0],
-    [0, 7, 7],
-]
-
-piece_TM = [
-    [8, 8, 8, 8],
-    [0, 8, 0, 0]
-]
-
-piece_truc = [
-    [0,0,9],
-    [9,9,9],
-    [0,9,0]
-]
-
-piece_C = [
-    [10, 0],
-    [10, 10],
-    [10, 10]
-]
-
-piece_Z2 = [
-    [11, 11, 11, 0],
-    [0, 0, 11, 11],
-]
-    
 
 # Fonction pour placer une pièce sur le plateau
-def placer_piece(plateau, piece, position):
-    if peut_placer_piece(plateau, piece, position):
-        for i in range(len(piece)):
-            for j in range(len(piece[0])):
-                if piece[i][j] != 0:
-                    plateau[position[0] + i][position[1] + j] = piece[i][j]
-        afficher_plateau(plateau)
+def placer_piece(plateau, forme, position):
+    if peut_placer_piece(plateau, forme.piece, position):
+        for i in range(len(forme.piece)):
+            for j in range(len(forme.piece[0])):
+                if forme.piece[i][j] != 0:
+                    plateau[position[0] + i][position[1] + j] = forme.piece[i][j]
+        # afficher_plateau(plateau)
         return True
     else:
         print("Impossible de placer la pièce ici")
         return False
+
+
 # Fonction pour vérifier si une pièce peut être placée à un certain endroit
 def peut_placer_piece(plateau, piece, position):
     for i in range(len(piece)):
         for j in range(len(piece[0])):
             if (
-                position[0] + i < 0
-                or position[1] + j < 0
-                or position[0] + i >= len(plateau)
-                or position[1] + j >= len(plateau[0])
-                or (piece[i][j] == 1 and plateau[position[0] + i][position[1] + j] == 1)
+                    position[0] + i < 0  # si la position est en dehors du plateau dans le nega
+                    or position[1] + j < 0  # si la position est en dehors du plateau dans le nega
+                    or position[0] + i >= len(plateau)  # si la position est en dehors du plateau dans le pos
+                    or position[1] + j >= len(plateau[0])  # si la position est en dehors du plateau dans le pos
+                    or (piece[i][j] != 0 and plateau[position[0] + i][position[1] + j] != 0)
+                    # si la case est deja prise
             ):
                 return False
     return True
 
+
 def tourner_piece_horraire(piece):
-    return [list(reversed(col)) for col in zip(*piece)]
+    return [list(reversed(col)) for col in zip(*piece.piece)]
 
 
 # Fonction pour afficher le plateau
-def afficher_plateau(plateau):
-    for ligne in plateau:
+def afficher_plateau(table):
+    for ligne in table.plateau:
         ligne_affichee = ""
         for case in ligne:
             if case == 0:
@@ -110,7 +152,12 @@ def afficher_plateau(plateau):
 
         print(ligne_affichee)
 
-position = (4,0)
-placer_piece(plateau, piece_L, position)
-placer_piece(plateau, piece_L2, position)
-placer_piece(plateau, piece_L3, position)
+
+# table = plateau(5, 11)
+# position = (2, 0)
+# forme1 = piece(1)
+# forme2 = piece(1)
+# placer_piece(table, forme1, position)
+# placer_piece(table, forme2, (0, 0))
+#
+# table.afficher_tableau_console()
