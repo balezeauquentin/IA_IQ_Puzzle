@@ -24,7 +24,7 @@ class plateau:
                     print(" . ", end="")
                 else:
                     print(" " + chr(ord('A') + self.plateau[i][j] - 1) + " ", end="")
-            print("\n")
+            print("\n", end="")
 
 # Création d'une pièce (exemple avec une pièce en forme de L)
 class piece:
@@ -120,6 +120,9 @@ class piece:
             self.piece = [[12,12,0],
                           [0,12,12],
                           [0,0,12]]
+    def tourner_piece_horraire(piece):
+        return [list(reversed(col)) for col in zip(*piece.piece)]
+
 
 # Fonction pour placer une pièce sur le plateau
 def placer_piece(plateau, forme, position):
@@ -148,9 +151,6 @@ def peut_placer_piece(plateau, piece, position):
             ):
                 return False
     return True
-
-def tourner_piece_horraire(piece):
-    return [list(reversed(col)) for col in zip(*piece.piece)]
 
 # Fonction pour afficher le plateau
 def afficher_plateau(table):
