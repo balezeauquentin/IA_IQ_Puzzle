@@ -4,16 +4,16 @@ class plateau:
         self.hauteur = hauteur
         self.largeur = largeur
         self.plateau = [[0 for _ in range(largeur)] for _ in range(hauteur)]
+        
     def __copy__(self):
         return plateau(self.hauteur, self.largeur)
-
-
+    
     def __len__(self):
         return self.hauteur
-
+    
     def __getitem__(self, i):
         return self.plateau[i]
-
+    
     def __setitem__(self, i, val):
         self.plateau[i] = val
 
@@ -25,7 +25,6 @@ class plateau:
                 else:
                     print(" " + chr(ord('A') + self.plateau[i][j] - 1) + " ", end="")
             print("\n")
-
 
 # Création d'une pièce (exemple avec une pièce en forme de L)
 class piece:
@@ -40,6 +39,7 @@ class piece:
                 [1, 0],
                 [1, 1]
             ]
+            
         elif id == 2:
             # 2 = L2
             self.piece = [
@@ -48,12 +48,14 @@ class piece:
                 [2, 0],
                 [2, 2]
             ]
+            
         elif id == 3:
             # 3 = L3
             self.piece = [
                 [3, 0],
                 [3, 3],
             ]
+            
         elif id == 4:
             # 4 = L4
             self.piece = [
@@ -61,6 +63,7 @@ class piece:
                 [4, 0, 0],
                 [4, 4, 4]
             ]
+            
         elif id == 5:
             # 5 = U
             self.piece = [
@@ -68,24 +71,28 @@ class piece:
                 [5, 0],
                 [5, 5]
             ]
+            
         elif id == 6:
             # 6 = T
             self.piece = [
                 [6, 6, 6],
                 [0, 6, 0]
             ]
+            
         elif id == 7:
             # 7 = Z
             self.piece = [
                 [7, 7, 0],
                 [0, 7, 7],
             ]
+            
         elif id == 8:
             # 8 = Z2
             self.piece = [
                 [8, 8, 8, 8],
                 [0, 8, 0, 0]
             ]
+            
         elif id == 9:
             # 9 = truc
             self.piece = [
@@ -93,6 +100,7 @@ class piece:
                 [9, 9, 9],
                 [0, 9, 0]
             ]
+            
         elif id == 10:
             # 10 = C
             self.piece = [
@@ -100,18 +108,18 @@ class piece:
                 [10, 10],
                 [10, 10]
             ]
+            
         elif id == 11:
             # 11 = Z2
             self.piece = [
                 [11, 11, 11, 0],
                 [0, 0, 11, 11],
             ]
+            
         elif id ==12:
             self.piece = [[12,12,0],
                           [0,12,12],
                           [0,0,12]]
-
-
 
 # Fonction pour placer une pièce sur le plateau
 def placer_piece(plateau, forme, position):
@@ -125,7 +133,6 @@ def placer_piece(plateau, forme, position):
     else:
         print("Impossible de placer la pièce ici")
         return False
-
 
 # Fonction pour vérifier si une pièce peut être placée à un certain endroit
 def peut_placer_piece(plateau, piece, position):
@@ -142,10 +149,8 @@ def peut_placer_piece(plateau, piece, position):
                 return False
     return True
 
-
 def tourner_piece_horraire(piece):
     return [list(reversed(col)) for col in zip(*piece.piece)]
-
 
 # Fonction pour afficher le plateau
 def afficher_plateau(table):
@@ -159,12 +164,11 @@ def afficher_plateau(table):
 
         print(ligne_affichee)
 
-
-# table = plateau(5, 11)
-# position = (2, 0)
-# forme1 = piece(1)
-# forme2 = piece(1)
-# placer_piece(table, forme1, position)
-# placer_piece(table, forme2, (0, 0))
-#
-# table.afficher_tableau_console()
+table = plateau(5, 11)
+position = (2, 0)
+forme1 = piece(1)
+forme2 = piece(1)
+placer_piece(table, forme1, position)
+placer_piece(table, forme2, (0, 0))
+table.afficher_tableau_console()
+afficher_plateau(table)
