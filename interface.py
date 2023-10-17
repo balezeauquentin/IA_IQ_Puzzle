@@ -69,6 +69,22 @@ class Interface:
         self.drawGrid()
         pg.display.flip() 
         pg.display.update()
+    def affichage_clase(self,plateau:Plateau):
+        self.screen.fill(self.bkg_color)
+        x, y = 0, 0
+
+        for ligne in plateau.plateau:
+            for case in ligne:
+                if case != 0:
+                    self.drawSquare(case, x, y)
+                x += self.SQUARE_SIZE
+            x = 0
+            y += self.SQUARE_SIZE
+
+        self.drawPreview()
+        self.drawGrid()
+        pg.display.flip()
+        pg.display.update()
 
     def drawGrid(self) -> None:
         #Draws horizontal lines
