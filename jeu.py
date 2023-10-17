@@ -1,12 +1,12 @@
 # Création du plateau
-class plateau:
+class Plateau:
     def __init__(self, hauteur, largeur):
         self.hauteur = hauteur
         self.largeur = largeur
         self.plateau = [[0 for _ in range(largeur)] for _ in range(hauteur)]
-    def __copy__(self):
-        return plateau(self.hauteur, self.largeur)
 
+    def __copy__(self):
+        return Plateau(self.hauteur, self.largeur)
 
     def __len__(self):
         return self.hauteur
@@ -28,7 +28,7 @@ class plateau:
 
 
 # Création d'une pièce (exemple avec une pièce en forme de L)
-class piece:
+class Piece:
     def __init__(self, id):
         self.id = id
 
@@ -166,5 +166,5 @@ def afficher_plateau(table):
 # forme2 = piece(1)
 # placer_piece(table, forme1, position)
 # placer_piece(table, forme2, (0, 0))
-#
+
 # table.afficher_tableau_console()
