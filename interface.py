@@ -1,5 +1,6 @@
 import pygame as pg
 from jeu import *
+import time
 
 # TODO:
 # Finir la preview de la piece avant de la poser
@@ -143,37 +144,37 @@ class Interface:
                     self.plateau[x][y] = 0
 
 
-def getColorFromID(id:int) -> tuple[int,int,int] | None:
+def getColorFromID(id:int):
     """
     Returns a color given the ID of a shape
     """
-    match id:
-        case 1:
-            color = Interface.Colors.RED
-        case 2:
-            color = Interface.Colors.BLUE
-        case 3:
-            color = Interface.Colors.GREEN
-        case 4:
-            color = Interface.Colors.MAGENTA
-        case 5:
-            color = Interface.Colors.CYAN
-        case 6:
-            color = Interface.Colors.YELLOW
-        case 7:
-            color = Interface.Colors.ORANGE
-        case 8:
-            color = Interface.Colors.PINK
-        case 9:
-            color = Interface.Colors.PURPLE
-        case 10:
-            color = Interface.Colors.DARK_GREEN
-        case 11:
-            color = Interface.Colors.GREY
-        case 12:
-            color = Interface.Colors.BLACK
-        case _:
-            color = None
+    if id == 1:
+        color = Interface.Colors.RED
+    elif id == 2:
+        color = Interface.Colors.BLUE
+    elif id == 3:
+        color = Interface.Colors.GREEN
+    elif id == 4:
+        color = Interface.Colors.MAGENTA
+    elif id == 5:
+        color = Interface.Colors.CYAN
+    elif id == 6:
+        color = Interface.Colors.YELLOW
+    elif id == 7:
+        color = Interface.Colors.ORANGE
+    elif id == 8:
+        color = Interface.Colors.PINK
+    elif id == 9:
+        color = Interface.Colors.PURPLE
+    elif id == 10:
+        color = Interface.Colors.DARK_GREEN
+    elif id == 11:
+        color = Interface.Colors.GREY
+    elif id == 12:
+        color = Interface.Colors.BLACK
+    else:
+        color = None
+
     return color
 
 
@@ -182,6 +183,7 @@ if __name__ == "__main__":
     inte = Interface()
     
     pg.time.Clock().tick(60)
-    while inte.isRunning: 
+    while inte.isRunning:
+
         inte.events()
         inte.update()
