@@ -40,9 +40,9 @@ def brutforce(table: jeu.Plateau, pieces, used_pieces, position=(0, 0)):
                     next_position = (i, j + 1)
                     if next_position[1] == len(table[0]):
                         next_position = (i + 1, 0)
-                    used_pieces[piece_id - 1] = 1
-                    updated_used_pieces = used_pieces[:]
 
+                    updated_used_pieces = used_pieces[:]
+                    updated_used_pieces[piece_id - 1] = 1
                     temp_table.afficher_tableau_console()
                     affichage.affichage_clase(temp_table)
 
