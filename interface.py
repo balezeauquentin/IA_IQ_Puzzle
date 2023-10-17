@@ -31,10 +31,10 @@ class Interface:
 
 
     def __init__(self, height = 5, width = 11) -> None:
-
+    
         # Used to make sure when a key is held down that we only press it once
         self.previous_keys = []
-
+        self.pos_rectified = (0,0)
         # By default select the first shape
         self.held_shape_id = 1
         self.held_shape = Piece(self.held_shape_id)
@@ -65,6 +65,7 @@ class Interface:
             x = 0
             y += self.SQUARE_SIZE
 
+        self.drawPreview()
         self.drawGrid()
         pg.display.flip() 
         pg.display.update()
@@ -77,12 +78,14 @@ class Interface:
             pg.draw.line(self.screen, Interface.Colors.BLACK, (x * self.SQUARE_SIZE, 0), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
 
     def drawSquare(self, squareID:int, x:int, y:int) -> None:
+        # radius = 40
+        # pg.draw.circle(self.screen, getColorFromID(squareID), (x+self.SQUARE_SIZE/2, y+self.SQUARE_SIZE/2), radius)
         pg.draw.rect(self.screen, getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
 
     def drawPreview(self):
+        pass
         p = Piece(self.held_shape_id)
-        placer_piece(self.plateau, )
-        pg.draw.rect(self.screen, getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
+        
 
     def events(self) -> None:
         """
@@ -94,8 +97,13 @@ class Interface:
             if event.type == pg.QUIT: 
                 self.isRunning = False
             if event.type == pg.MOUSEBUTTONDOWN:
-                pos_rectified = int(self.mousePos[1] / self.SQUARE_SIZE), int(self.mousePos[0] / self.SQUARE_SIZE)
-                placer_piece(self.plateau, self.held_shape, pos_rectified)
+                self.pos_rectified = int(self.mousePos[1] / self.SQUARE_SIZE), int(self.mousePos[0] / self.SQUARE_SIZE)
+                if event.button == pg.BUTTON_LEFT:
+                    placer_piece(self.plateau, self.held_shape, self.pos_rectified)
+                if event.button == pg.BUTTON_RIGHT:
+                    id = self.plateau[self.pos_rectified[0]][self.pos_rectified[1]]
+                    self.removePiece(id)
+
         if keys[pg.K_ESCAPE] :
             self.isRunning = False
         if keys[pg.K_LEFT] and keys[pg.K_LEFT] != self.previous_keys[pg.K_LEFT]:
@@ -127,7 +135,13 @@ class Interface:
         
         self.held_shape = Piece(self.held_shape_id)
 
-    
+
+    def removePiece(self, id:int) -> None:
+        for x in range(len(self.plateau)):
+            for y in range(len(self.plateau[x])):
+                if self.plateau[x][y] == id:
+                    self.plateau[x][y] = 0
+
 
 def getColorFromID(id:int) -> tuple[int,int,int] | None:
     """
@@ -162,16 +176,11 @@ def getColorFromID(id:int) -> tuple[int,int,int] | None:
             color = None
     return color
 
+
 if __name__ == "__main__":
+    pg.init()
     inte = Interface()
-    p = Piece(1)
-    # placer_piece(inte.plateau, p, (2,0))
-    # placer_piece(inte.plateau, Piece(2), (0,4))
-    # placer_piece(inte.plateau, Piece(3), (1,2))
-    # placer_piece(inte.plateau, Piece(4), (1,1))
-    # placer_piece(inte.plateau, Piece(5), (0,5))
-
-
+    
     pg.time.Clock().tick(60)
     while inte.isRunning: 
         inte.events()
