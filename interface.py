@@ -1,6 +1,5 @@
 import pygame as pg
 from jeu import *
-import time
 
 # TODO:
 # Finir la preview de la piece avant de la poser
@@ -91,6 +90,8 @@ class Interface:
         #Draws horizontal lines
         for y in range(len(self.plateau)):
             pg.draw.line(self.screen, Interface.Colors.BLACK, (0, y*self.SQUARE_SIZE), (self.WIN_WIDTH, y*self.SQUARE_SIZE))
+
+        # Draws vertical lines
         for x in range(len(self.plateau[0])):
             pg.draw.line(self.screen, Interface.Colors.BLACK, (x * self.SQUARE_SIZE, 0), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
 
@@ -127,9 +128,8 @@ class Interface:
             self.change_piece_id("+")
         if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
             self.change_piece_id("-")
-        
-        # if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
-        #     self.held_shape = tourner_piece_horraire(self.held_shape)
+        if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
+            self.held_shape.tourner_piece_horraire()
 
         self.previous_keys = keys
 
