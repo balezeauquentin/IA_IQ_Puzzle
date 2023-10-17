@@ -69,11 +69,12 @@ class Interface:
         self.drawGrid()
         pg.display.flip() 
         pg.display.update()
-    def affichage_clase(self,plateau:Plateau):
+
+    def drawGame(self):
         self.screen.fill(self.bkg_color)
         x, y = 0, 0
 
-        for ligne in plateau.plateau:
+        for ligne in self.plateau:
             for case in ligne:
                 if case != 0:
                     self.drawSquare(case, x, y)
