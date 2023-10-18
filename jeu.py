@@ -1,5 +1,8 @@
 # Création du plateau
 class Plateau:
+
+    used_shapes = []
+
     def __init__(self, hauteur, largeur):
         self.hauteur = hauteur
         self.largeur = largeur
@@ -128,7 +131,7 @@ class Piece:
 
 
 # Fonction pour placer une pièce sur le plateau
-def placer_piece(plateau, forme, position):
+def placer_piece(plateau:Plateau, forme, position):
     if peut_placer_piece(plateau, forme.piece, position):
         for i in range(len(forme.piece)):
             for j in range(len(forme.piece[0])):
