@@ -1,12 +1,17 @@
 import jeu
+import interface
 
-def brutforce(table, pieces, position=(0, 0), used_pieces=None):
-    if 12 == len(used_pieces):
+
+def brutforce(affichage : interface.Interface, pieces, used_pieces, position=(0, 0)):
+    
+    table = affichage.plateau
+    if 0 not in used_pieces:
         # Toutes les pièces ont été utilisées, nous avons une solution.
         print("Solution trouvée:")
-        plateau_solution = jeu.plateau(len(table), len(table[0]))
+        plateau_solution = jeu.Plateau(len(table), len(table[0]))
         plateau_solution.plateau = table
         plateau_solution.afficher_tableau_console()
+        affichage.drawGame()
         return
 
     i, j = position
@@ -24,22 +29,28 @@ def brutforce(table, pieces, position=(0, 0), used_pieces=None):
     if i == len(table):
         # Toutes les cases ont été remplies, mais nous n'avons pas encore de solution.
         return
-
+    temp_table = jeu.Plateau(len(table), len(table[0]))
+    temp_table.plateau = [row[:] for row in table]
     for piece_id in range(1, 13):  # Mise à jour pour 12 pièces
-        if piece_id not in used_pieces:
-            current_piece = jeu.piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
+        if used_pieces[piece_id - 1] == 0:
+            current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
             for _ in range(4):
+
                 if jeu.peut_placer_piece(table, current_piece.piece, (i, j)):
-                    temp_table = [row[:] for row in table]
+
                     jeu.placer_piece(temp_table, current_piece, (i, j))
                     next_position = (i, j + 1)
                     if next_position[1] == len(table[0]):
                         next_position = (i + 1, 0)
-                    updated_used_pieces = used_pieces + [piece_id]
-                    brutforce(temp_table, pieces, next_position, updated_used_pieces)
-                current_piece.piece = jeu.tourner_piece_horraire(current_piece)
+                    used_pieces[piece_id - 1] = 1
+                    updated_used_pieces = used_pieces[:]
 
-table = jeu.plateau(5, 11)
-pieces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]  # Liste des pièces de 1 à 12
+                    # temp_table.afficher_tableau_console()
+                    # affichage.drawGame()
+                    affichage.plateau = temp_table
+                    brutforce(affichage, pieces, updated_used_pieces, next_position)
+                current_piece.tourner_piece_horraire()  # Renomme la fonction pour éviter le conflit de noms
 
-brutforce(table.plateau, pieces, used_pieces=[])
+if __name__ == "__main__":
+    a = interface.Interface()
+    brutforce(a, None, [0 for _ in range(12)])

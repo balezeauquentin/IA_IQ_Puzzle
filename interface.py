@@ -70,10 +70,29 @@ class Interface:
         pg.display.flip() 
         pg.display.update()
 
+    def drawGame(self):
+        self.screen.fill(self.bkg_color)
+        x, y = 0, 0
+
+        for ligne in self.plateau:
+            for case in ligne:
+                if case != 0:
+                    self.drawSquare(case, x, y)
+                x += self.SQUARE_SIZE
+            x = 0
+            y += self.SQUARE_SIZE
+
+        self.drawPreview()
+        self.drawGrid()
+        pg.display.flip()
+        pg.display.update()
+
     def drawGrid(self) -> None:
         #Draws horizontal lines
         for y in range(len(self.plateau)):
             pg.draw.line(self.screen, Interface.Colors.BLACK, (0, y*self.SQUARE_SIZE), (self.WIN_WIDTH, y*self.SQUARE_SIZE))
+
+        # Draws vertical lines
         for x in range(len(self.plateau[0])):
             pg.draw.line(self.screen, Interface.Colors.BLACK, (x * self.SQUARE_SIZE, 0), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
 
@@ -110,9 +129,8 @@ class Interface:
             self.change_piece_id("+")
         if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
             self.change_piece_id("-")
-        
-        # if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
-        #     self.held_shape = tourner_piece_horraire(self.held_shape)
+        if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
+            self.held_shape.tourner_piece_horraire()
 
         self.previous_keys = keys
 
@@ -143,7 +161,7 @@ class Interface:
                     self.plateau[x][y] = 0
 
 
-def getColorFromID(id:int) -> tuple[int,int,int] | None:
+def getColorFromID(id:int):
     """
     Returns a color given the ID of a shape
     """
@@ -173,6 +191,7 @@ def getColorFromID(id:int) -> tuple[int,int,int] | None:
         color = Interface.Colors.BLACK
     else:
         color = None
+
     return color
 
 
@@ -181,6 +200,7 @@ if __name__ == "__main__":
     inte = Interface()
 
     pg.time.Clock().tick(60)
-    while inte.isRunning: 
+    while inte.isRunning:
+
         inte.events()
         inte.update()

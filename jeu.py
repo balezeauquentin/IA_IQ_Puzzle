@@ -117,11 +117,14 @@ class Piece:
             ]
             
         elif id ==12:
-            self.piece = [[12,12,0],
-                          [0,12,12],
-                          [0,0,12]]
-    def tourner_piece_horraire(piece):
-        return [list(reversed(col)) for col in zip(*piece.piece)]
+            self.piece = [
+                [12,12,0],
+                [0,12,12],
+                [0,0,12]
+            ]
+            
+    def tourner_piece_horraire(self):
+        self.piece = [list(reversed(col)) for col in zip(*self.piece)]
 
 
 # Fonction pour placer une pièce sur le plateau
