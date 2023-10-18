@@ -82,7 +82,7 @@ class Interface:
         # pg.draw.circle(self.screen, getColorFromID(squareID), (x+self.SQUARE_SIZE/2, y+self.SQUARE_SIZE/2), radius)
         pg.draw.rect(self.screen, getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
 
-    def drawPreview(self):
+    def drawPreview(self) -> None:
         pass
         p = Piece(self.held_shape_id)
         
@@ -121,9 +121,9 @@ class Interface:
         Changes the ID of the shape currently in the players hand
         Does checking to make sure the ID does go higher than the number of shapes present in the game
         """
-        if(mode == "+" and self.held_shape_id < 12):
+        if mode == "+" and self.held_shape_id < 12:
             self.held_shape_id += 1
-        elif(mode == "-" and self.held_shape_id > 1):
+        elif mode == "-" and self.held_shape_id > 1:
             self.held_shape_id -= 1
         elif mode == "+" and self.held_shape_id == 12:
             self.held_shape_id = 1
@@ -147,40 +147,39 @@ def getColorFromID(id:int) -> tuple[int,int,int] | None:
     """
     Returns a color given the ID of a shape
     """
-    match id:
-        case 1:
-            color = Interface.Colors.RED
-        case 2:
-            color = Interface.Colors.BLUE
-        case 3:
-            color = Interface.Colors.GREEN
-        case 4:
-            color = Interface.Colors.MAGENTA
-        case 5:
-            color = Interface.Colors.CYAN
-        case 6:
-            color = Interface.Colors.YELLOW
-        case 7:
-            color = Interface.Colors.ORANGE
-        case 8:
-            color = Interface.Colors.PINK
-        case 9:
-            color = Interface.Colors.PURPLE
-        case 10:
-            color = Interface.Colors.DARK_GREEN
-        case 11:
-            color = Interface.Colors.GREY
-        case 12:
-            color = Interface.Colors.BLACK
-        case _:
-            color = None
+    if id == 1:
+        color = Interface.Colors.RED
+    elif id == 2:
+        color = Interface.Colors.BLUE
+    elif id == 3:
+        color = Interface.Colors.GREEN
+    elif id == 4:
+        color = Interface.Colors.MAGENTA
+    elif id == 5:
+        color = Interface.Colors.CYAN
+    elif id == 6:
+        color = Interface.Colors.YELLOW
+    elif id == 7:
+        color = Interface.Colors.ORANGE
+    elif id == 8:
+        color = Interface.Colors.PINK
+    elif id == 9:
+        color = Interface.Colors.PURPLE
+    elif id == 10:
+        color = Interface.Colors.DARK_GREEN
+    elif id == 11:
+        color = Interface.Colors.GREY
+    elif id == 12:
+        color = Interface.Colors.BLACK
+    else:
+        color = None
     return color
 
 
 if __name__ == "__main__":
     pg.init()
     inte = Interface()
-    
+
     pg.time.Clock().tick(60)
     while inte.isRunning: 
         inte.events()
