@@ -39,7 +39,7 @@ class Interface:
         self.held_shape_id = 1
         self.held_shape = Piece(self.held_shape_id)
 
-        self.plateau = Plateau(height, width)
+        self.plateau = Board(height, width)
 
         # Creates the pygame window
         self.bkg_color = Interface.Colors.WHITE
@@ -118,7 +118,7 @@ class Interface:
             if event.type == pg.MOUSEBUTTONDOWN:
                 self.pos_rectified = int(self.mousePos[1] / self.SQUARE_SIZE), int(self.mousePos[0] / self.SQUARE_SIZE)
                 if event.button == pg.BUTTON_LEFT:
-                    placer_piece(self.plateau, self.held_shape, self.pos_rectified)
+                    self.plateau.placeShape(self.held_shape, self.pos_rectified)
                 if event.button == pg.BUTTON_RIGHT:
                     id = self.plateau[self.pos_rectified[0]][self.pos_rectified[1]]
                     self.removePiece(id)
@@ -130,7 +130,7 @@ class Interface:
         if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
             self.change_piece_id("-")
         if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
-            self.held_shape.tourner_piece_horraire()
+            self.held_shape.turnPiece()
 
         self.previous_keys = keys
 

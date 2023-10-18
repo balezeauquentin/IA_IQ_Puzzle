@@ -1,33 +1,63 @@
 # Création du plateau
-class Plateau:
-
+class Board:
     used_shapes = []
-
-    def __init__(self, hauteur, largeur):
-        self.hauteur = hauteur
-        self.largeur = largeur
-        self.plateau = [[0 for _ in range(largeur)] for _ in range(hauteur)]
+    def __init__(self, height, width):
+        self.height = height
+        self.width = width
+        self.board = [[0 for _ in range(width)] for _ in range(height)]
 
     def __copy__(self):
-        return Plateau(self.hauteur, self.largeur)
+        return Board(self.height, self.width)
 
     def __len__(self):
-        return self.hauteur
+        return self.height
     
     def __getitem__(self, i):
-        return self.plateau[i]
+        return self.board[i]
     
     def __setitem__(self, i, val):
-        self.plateau[i] = val
+        self.board[i] = val
 
-    def afficher_tableau_console(self):
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
-                if self.plateau[i][j] == 0:
+    def printBoard(self):
+        for i in range(self.height):
+            for j in range(self.width):
+                if self.board[i][j] == 0:
                     print(" . ", end="")
                 else:
-                    print(" " + chr(ord('A') + self.plateau[i][j] - 1) + " ", end="")
+                    print(" " + chr(ord('A') + self.board[i][j] - 1) + " ", end="")
             print("\n", end="")
+
+    # Fonction pour placer une pièce sur le plateau
+    def placeShape(self, piece, position):
+        if self.canPlaceShape(piece, position):
+            self.used_shapes.append(piece.id)
+            for i in range(len(piece.piece)):
+                for j in range(len(piece.piece[0])):
+                    if piece.piece[i][j] != 0:
+                        self[position[0] + i][position[1] + j] = piece.piece[i][j]
+            # afficher_plateau(plateau)
+            return True
+        else:
+            print("Impossible de placer la pièce ici", self.used_shapes)
+            return False
+
+    # Fonction pour vérifier si une pièce peut être placée à un certain endroit
+    def canPlaceShape(self, piece, position):
+        if piece.id in self.used_shapes:
+            return False
+        for i in range(len(piece.piece)):
+            for j in range(len(piece.piece[0])):
+                if (
+                        position[0] + i < 0  # si la position est en dehors du plateau dans le nega
+                        or position[1] + j < 0  # si la position est en dehors du plateau dans le nega
+                        or position[0] + i >= len(self)  # si la position est en dehors du plateau dans le pos
+                        or position[1] + j >= len(self[0])  # si la position est en dehors du plateau dans le pos
+                        or (piece.piece[i][j] != 0 and self[position[0] + i][position[1] + j] != 0)
+                        # si la case est deja prise
+                ):
+                    return False
+        return True
+
 
 # Création d'une pièce (exemple avec une pièce en forme de L)
 class Piece:
@@ -112,6 +142,7 @@ class Piece:
                 [10, 10]
             ]
             
+
         elif id == 11:
             # 11 = Z2
             self.piece = [
@@ -126,49 +157,10 @@ class Piece:
                 [0,0,12]
             ]
             
-    def tourner_piece_horraire(self):
+    def turnPiece(self):
         self.piece = [list(reversed(col)) for col in zip(*self.piece)]
 
 
-# Fonction pour placer une pièce sur le plateau
-def placer_piece(plateau:Plateau, forme, position):
-    if peut_placer_piece(plateau, forme.piece, position):
-        for i in range(len(forme.piece)):
-            for j in range(len(forme.piece[0])):
-                if forme.piece[i][j] != 0:
-                    plateau[position[0] + i][position[1] + j] = forme.piece[i][j]
-        # afficher_plateau(plateau)
-        return True
-    else:
-        print("Impossible de placer la pièce ici")
-        return False
-
-# Fonction pour vérifier si une pièce peut être placée à un certain endroit
-def peut_placer_piece(plateau, piece, position):
-    for i in range(len(piece)):
-        for j in range(len(piece[0])):
-            if (
-                    position[0] + i < 0  # si la position est en dehors du plateau dans le nega
-                    or position[1] + j < 0  # si la position est en dehors du plateau dans le nega
-                    or position[0] + i >= len(plateau)  # si la position est en dehors du plateau dans le pos
-                    or position[1] + j >= len(plateau[0])  # si la position est en dehors du plateau dans le pos
-                    or (piece[i][j] != 0 and plateau[position[0] + i][position[1] + j] != 0)
-                    # si la case est deja prise
-            ):
-                return False
-    return True
-
-# Fonction pour afficher le plateau
-def afficher_plateau(table):
-    for ligne in table.plateau:
-        ligne_affichee = ""
-        for case in ligne:
-            if case == 0:
-                ligne_affichee += " . "
-            else:
-                ligne_affichee += " " + chr(ord('A') + case - 1) + " "
-
-        print(ligne_affichee)
 
 
 # table = plateau(5, 11)
