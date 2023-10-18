@@ -125,9 +125,10 @@ class Interface:
                 if self.held_shape.piece[shapeX][shapeY] != 0 :
                     c = Interface.Colors.getColorFromID(self.held_shape_id)
                     pg.draw.rect(s, (*c, 10),pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
-                    self.screen.blit(s, 
-                                    ((self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE,
-                                    (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE)
+                    self.screen.blit(s, (
+                                        (self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE,
+                                        (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE
+                                        )
                     )
 
     def events(self) -> None:
@@ -154,10 +155,9 @@ class Interface:
         if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
             self.changeShapeID("-")
         if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
-            self.held_shape.turnPiece()
-        if keys[pg.K_e] and keys[pg.K_r] != self.previous_keys[pg.K_e]:
-            # Implémenter la méthode pour mirroirer une pièce
-            pass
+            self.held_shape.turnClockwise()
+        if keys[pg.K_e] and keys[pg.K_e] != self.previous_keys[pg.K_e]:
+            self.held_shape.mirror()
 
         self.previous_keys = keys
 

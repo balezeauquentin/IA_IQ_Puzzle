@@ -157,8 +157,13 @@ class Piece:
                 [0,0,12]
             ]
             
-    def turnPiece(self):
+    def turnClockwise(self):
         self.piece = [list(reversed(col)) for col in zip(*self.piece)]
+
+    def mirror(self):
+        for line in self.piece:
+            line.reverse()
+
 
 
 

@@ -57,7 +57,7 @@ def brutforce(affichage, used_pieces,ayaya, position=(0, 0)):
                     print(ayaya)
                     brutforce(affichage, updated_used_pieces,ayaya, next_position)
                     affichage.remove(piece_id)
-                current_piece.turnPiece()  # Renomme la fonction pour éviter le conflit de noms
+                current_piece.turnClockwise()  # Renomme la fonction pour éviter le conflit de noms
 
 if __name__ == "__main__":
     a = interface.Interface()
