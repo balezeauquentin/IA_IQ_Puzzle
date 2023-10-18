@@ -70,23 +70,6 @@ class Interface:
         pg.display.flip() 
         pg.display.update()
 
-    # def drawGame(self):
-    #     self.screen.fill(self.bkg_color)
-    #     x, y = 0, 0
-
-    #     for ligne in self.plateau:
-    #         for case in ligne:
-    #             if case != 0:
-    #                 self.drawSquare(case, x, y)
-    #             x += self.SQUARE_SIZE
-    #         x = 0
-    #         y += self.SQUARE_SIZE
-
-    #     self.drawPreview()
-    #     self.drawGrid()
-    #     pg.display.flip()
-    #     pg.display.update()
-
     def drawGrid(self) -> None:
         #Draws horizontal lines
         for y in range(len(self.plateau)):
@@ -102,39 +85,48 @@ class Interface:
         pg.draw.rect(self.screen, getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
 
     def drawPreview(self) -> None:
-        pass
-        p = Piece(self.held_shape_id)
-        
+        # Create a surface to enable alpha channel
+        s = pg.Surface((self.SQUARE_SIZE, self.SQUARE_SIZE))
+        s.set_alpha(64)
+        for shapeX in range(len(self.held_shape.piece)):
+            for shapeY in range(len(self.held_shape.piece[shapeX])):
+                if self.held_shape.piece[shapeX][shapeY] != 0 :
+                    c = getColorFromID(self.held_shape_id)
+                    pg.draw.rect(s, (c[0], c[1], c[2], 10),pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
+                    self.screen.blit(s, 
+                                    ((self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE,
+                                    (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE)
+                    )
 
     def events(self) -> None:
         """
         Call events() before update()
         """
         self.mousePos = pg.mouse.get_pos()
+        self.pos_rectified = int(self.mousePos[1] / self.SQUARE_SIZE), int(self.mousePos[0] / self.SQUARE_SIZE)
         keys = pg.key.get_pressed()
         for event in pg.event.get():        
             if event.type == pg.QUIT: 
                 self.isRunning = False
             if event.type == pg.MOUSEBUTTONDOWN:
-                self.pos_rectified = int(self.mousePos[1] / self.SQUARE_SIZE), int(self.mousePos[0] / self.SQUARE_SIZE)
                 if event.button == pg.BUTTON_LEFT:
                     self.plateau.placeShape(self.held_shape, self.pos_rectified)
                 if event.button == pg.BUTTON_RIGHT:
                     id = self.plateau[self.pos_rectified[0]][self.pos_rectified[1]]
-                    self.removePiece(id)
+                    self.removeShape(id)
 
         if keys[pg.K_ESCAPE] :
             self.isRunning = False
         if keys[pg.K_LEFT] and keys[pg.K_LEFT] != self.previous_keys[pg.K_LEFT]:
-            self.change_piece_id("+")
+            self.changeShapeID("+")
         if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
-            self.change_piece_id("-")
+            self.changeShapeID("-")
         if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
             self.held_shape.turnPiece()
 
         self.previous_keys = keys
 
-    def change_piece_id(self,mode:str) -> None:
+    def changeShapeID(self,mode:str) -> None:
         """
         Changes the ID of the shape currently in the players hand
         Does checking to make sure the ID does go higher than the number of shapes present in the game
@@ -150,11 +142,10 @@ class Interface:
         else:
             self.held_shape_id = 1
 
-        
         self.held_shape = Piece(self.held_shape_id)
 
-
-    def removePiece(self, id:int) -> None:
+    def removeShape(self, id:int) -> None:
+        self.plateau.used_shapes.remove(id)
         for x in range(len(self.plateau)):
             for y in range(len(self.plateau[x])):
                 if self.plateau[x][y] == id:
@@ -198,9 +189,7 @@ def getColorFromID(id:int):
 if __name__ == "__main__":
     pg.init()
     inte = Interface()
-
     pg.time.Clock().tick(60)
     while inte.isRunning:
-
         inte.events()
         inte.update()
