@@ -1,6 +1,12 @@
 import jeu
 import interface
 
+# def find_isoalte_celle(table: jeu.Board):
+#     for i in range(len(table.board)):
+#         for j in range(len(table.board[0])):
+#             if table.board[i][j]==0:
+#                 if i==0 or table.board[i-1][j]!=0 and i==
+
 
 def brutforce(affichage, used_pieces, position=(0, 0)):
     affichage.update()
