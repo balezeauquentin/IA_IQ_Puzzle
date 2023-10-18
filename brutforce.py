@@ -42,7 +42,7 @@ def brutforce(affichage, used_pieces, position=(0, 0)):
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
             for _ in range(4):
 
-                if table.verifPlacePiece(current_piece.piece, (i, j)):
+                if table.canPlaceShape(current_piece.piece, (i, j)):
 
                     temp_table.placeShape(current_piece, (i, j))
                     next_position = (i, j + 1)
