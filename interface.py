@@ -70,22 +70,22 @@ class Interface:
         pg.display.flip() 
         pg.display.update()
 
-    def drawGame(self):
-        self.screen.fill(self.bkg_color)
-        x, y = 0, 0
+    # def drawGame(self):
+    #     self.screen.fill(self.bkg_color)
+    #     x, y = 0, 0
 
-        for ligne in self.plateau:
-            for case in ligne:
-                if case != 0:
-                    self.drawSquare(case, x, y)
-                x += self.SQUARE_SIZE
-            x = 0
-            y += self.SQUARE_SIZE
+    #     for ligne in self.plateau:
+    #         for case in ligne:
+    #             if case != 0:
+    #                 self.drawSquare(case, x, y)
+    #             x += self.SQUARE_SIZE
+    #         x = 0
+    #         y += self.SQUARE_SIZE
 
-        self.drawPreview()
-        self.drawGrid()
-        pg.display.flip()
-        pg.display.update()
+    #     self.drawPreview()
+    #     self.drawGrid()
+    #     pg.display.flip()
+    #     pg.display.update()
 
     def drawGrid(self) -> None:
         #Draws horizontal lines

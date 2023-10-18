@@ -2,8 +2,8 @@ import jeu
 import interface
 
 
-def brutforce(affichage : interface.Interface, pieces, used_pieces, position=(0, 0)):
-    
+def brutforce(affichage, used_pieces, position=(0, 0)):
+    affichage.update()
     table = affichage.plateau
     if 0 not in used_pieces:
         # Toutes les pièces ont été utilisées, nous avons une solution.
@@ -11,7 +11,7 @@ def brutforce(affichage : interface.Interface, pieces, used_pieces, position=(0,
         plateau_solution = jeu.Plateau(len(table), len(table[0]))
         plateau_solution.plateau = table
         plateau_solution.afficher_tableau_console()
-        affichage.drawGame()
+        affichage.update()
         return
 
     i, j = position
@@ -46,11 +46,10 @@ def brutforce(affichage : interface.Interface, pieces, used_pieces, position=(0,
                     updated_used_pieces = used_pieces[:]
 
                     # temp_table.afficher_tableau_console()
-                    # affichage.drawGame()
                     affichage.plateau = temp_table
-                    brutforce(affichage, pieces, updated_used_pieces, next_position)
+                    brutforce(affichage, updated_used_pieces, next_position)
                 current_piece.tourner_piece_horraire()  # Renomme la fonction pour éviter le conflit de noms
 
 if __name__ == "__main__":
     a = interface.Interface()
-    brutforce(a, None, [0 for _ in range(12)])
+    brutforce(a, [0 for _ in range(12)])
