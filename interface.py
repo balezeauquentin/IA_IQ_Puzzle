@@ -28,6 +28,39 @@ class Interface:
         GREY = (128, 128, 128)
         BLACK = (0, 0, 0)
         WHITE = (255, 255 ,255)   
+        
+        def getColorFromID(id:int):
+            """
+            Returns a color given the ID of a shape
+            """
+            if id == 1:
+                color = Interface.Colors.RED
+            elif id == 2:
+                color = Interface.Colors.BLUE
+            elif id == 3:
+                color = Interface.Colors.GREEN
+            elif id == 4:
+                color = Interface.Colors.MAGENTA
+            elif id == 5:
+                color = Interface.Colors.CYAN
+            elif id == 6:
+                color = Interface.Colors.YELLOW
+            elif id == 7:
+                color = Interface.Colors.ORANGE
+            elif id == 8:
+                color = Interface.Colors.PINK
+            elif id == 9:
+                color = Interface.Colors.PURPLE
+            elif id == 10:
+                color = Interface.Colors.DARK_GREEN
+            elif id == 11:
+                color = Interface.Colors.GREY
+            elif id == 12:
+                color = Interface.Colors.BLACK
+            else:
+                color = None
+
+            return color
 
 
     def __init__(self, height = 5, width = 11) -> None:
@@ -39,7 +72,7 @@ class Interface:
         self.held_shape_id = 1
         self.held_shape = Piece(self.held_shape_id)
 
-        self.plateau = Board(height, width)
+        self.board = Board(height, width)
 
         # Creates the pygame window
         self.bkg_color = Interface.Colors.WHITE
@@ -57,7 +90,7 @@ class Interface:
         self.screen.fill(self.bkg_color)
         x,y = 0,0
         
-        for ligne in self.plateau:
+        for ligne in self.board:
             for case in ligne:
                 if case != 0:
                     self.drawSquare(case,x,y)
@@ -72,17 +105,17 @@ class Interface:
 
     def drawGrid(self) -> None:
         #Draws horizontal lines
-        for y in range(len(self.plateau)):
+        for y in range(len(self.board)):
             pg.draw.line(self.screen, Interface.Colors.BLACK, (0, y*self.SQUARE_SIZE), (self.WIN_WIDTH, y*self.SQUARE_SIZE))
 
         # Draws vertical lines
-        for x in range(len(self.plateau[0])):
+        for x in range(len(self.board[0])):
             pg.draw.line(self.screen, Interface.Colors.BLACK, (x * self.SQUARE_SIZE, 0), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
 
     def drawSquare(self, squareID:int, x:int, y:int) -> None:
         # radius = 40
         # pg.draw.circle(self.screen, getColorFromID(squareID), (x+self.SQUARE_SIZE/2, y+self.SQUARE_SIZE/2), radius)
-        pg.draw.rect(self.screen, getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
+        pg.draw.rect(self.screen, Interface.Colors.getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
 
     def drawPreview(self) -> None:
         # Create a surface to enable alpha channel
@@ -91,8 +124,8 @@ class Interface:
         for shapeX in range(len(self.held_shape.piece)):
             for shapeY in range(len(self.held_shape.piece[shapeX])):
                 if self.held_shape.piece[shapeX][shapeY] != 0 :
-                    c = getColorFromID(self.held_shape_id)
-                    pg.draw.rect(s, (c[0], c[1], c[2], 10),pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
+                    c = Interface.Colors.getColorFromID(self.held_shape_id)
+                    pg.draw.rect(s, (*c, 10),pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
                     self.screen.blit(s, 
                                     ((self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE,
                                     (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE)
@@ -110,9 +143,9 @@ class Interface:
                 self.isRunning = False
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == pg.BUTTON_LEFT:
-                    self.plateau.placeShape(self.held_shape, self.pos_rectified)
+                    self.board.placeShape(self.held_shape, self.pos_rectified)
                 if event.button == pg.BUTTON_RIGHT:
-                    id = self.plateau[self.pos_rectified[0]][self.pos_rectified[1]]
+                    id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
                     self.removeShape(id)
 
         if keys[pg.K_ESCAPE] :
@@ -145,45 +178,18 @@ class Interface:
         self.held_shape = Piece(self.held_shape_id)
 
     def removeShape(self, id:int) -> None:
-        self.plateau.used_shapes.remove(id)
-        for x in range(len(self.plateau)):
-            for y in range(len(self.plateau[x])):
-                if self.plateau[x][y] == id:
-                    self.plateau[x][y] = 0
+        """
+        Removes a shape from the board given its ID
+        """
+        if id in self.board.used_shapes:
+            self.board.used_shapes.remove(id)
+            for x in range(len(self.board)):
+                for y in range(len(self.board[x])):
+                    if self.board[x][y] == id:
+                        self.board[x][y] = 0
 
 
-def getColorFromID(id:int):
-    """
-    Returns a color given the ID of a shape
-    """
-    if id == 1:
-        color = Interface.Colors.RED
-    elif id == 2:
-        color = Interface.Colors.BLUE
-    elif id == 3:
-        color = Interface.Colors.GREEN
-    elif id == 4:
-        color = Interface.Colors.MAGENTA
-    elif id == 5:
-        color = Interface.Colors.CYAN
-    elif id == 6:
-        color = Interface.Colors.YELLOW
-    elif id == 7:
-        color = Interface.Colors.ORANGE
-    elif id == 8:
-        color = Interface.Colors.PINK
-    elif id == 9:
-        color = Interface.Colors.PURPLE
-    elif id == 10:
-        color = Interface.Colors.DARK_GREEN
-    elif id == 11:
-        color = Interface.Colors.GREY
-    elif id == 12:
-        color = Interface.Colors.BLACK
-    else:
-        color = None
 
-    return color
 
 
 if __name__ == "__main__":
