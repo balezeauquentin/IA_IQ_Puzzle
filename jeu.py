@@ -1,29 +1,29 @@
 # Création du plateau
-class Plateau:
-    def __init__(self, hauteur, largeur):
-        self.hauteur = hauteur
-        self.largeur = largeur
-        self.plateau = [[0 for _ in range(largeur)] for _ in range(hauteur)]
+class Board:
+    def __init__(self, height, width):
+        self.height = height
+        self.width = width
+        self.board = [[0 for _ in range(width)] for _ in range(height)]
 
     def __copy__(self):
-        return Plateau(self.hauteur, self.largeur)
+        return Board(self.height, self.width)
 
     def __len__(self):
-        return self.hauteur
+        return self.height
     
     def __getitem__(self, i):
-        return self.plateau[i]
+        return self.board[i]
     
     def __setitem__(self, i, val):
-        self.plateau[i] = val
+        self.board[i] = val
 
     def afficher_tableau_console(self):
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
-                if self.plateau[i][j] == 0:
+        for i in range(self.height):
+            for j in range(self.width):
+                if self.board[i][j] == 0:
                     print(" . ", end="")
                 else:
-                    print(" " + chr(ord('A') + self.plateau[i][j] - 1) + " ", end="")
+                    print(" " + chr(ord('A') + self.board[i][j] - 1) + " ", end="")
             print("\n", end="")
 
 # Création d'une pièce (exemple avec une pièce en forme de L)
@@ -128,12 +128,12 @@ class Piece:
 
 
 # Fonction pour placer une pièce sur le plateau
-def placer_piece(plateau, forme, position):
-    if peut_placer_piece(plateau, forme.piece, position):
-        for i in range(len(forme.piece)):
-            for j in range(len(forme.piece[0])):
-                if forme.piece[i][j] != 0:
-                    plateau[position[0] + i][position[1] + j] = forme.piece[i][j]
+def placePiece(board, piece, position):
+    if verifPlacePiece(Board, piece.piece, position):
+        for i in range(len(piece.piece)):
+            for j in range(len(piece.piece[0])):
+                if piece.piece[i][j] != 0:
+                    board[position[0] + i][position[1] + j] = piece.piece[i][j]
         # afficher_plateau(plateau)
         return True
     else:
@@ -141,31 +141,31 @@ def placer_piece(plateau, forme, position):
         return False
 
 # Fonction pour vérifier si une pièce peut être placée à un certain endroit
-def peut_placer_piece(plateau, piece, position):
+def verifPlacePiece(board, piece, position):
     for i in range(len(piece)):
         for j in range(len(piece[0])):
             if (
                     position[0] + i < 0  # si la position est en dehors du plateau dans le nega
                     or position[1] + j < 0  # si la position est en dehors du plateau dans le nega
-                    or position[0] + i >= len(plateau)  # si la position est en dehors du plateau dans le pos
-                    or position[1] + j >= len(plateau[0])  # si la position est en dehors du plateau dans le pos
-                    or (piece[i][j] != 0 and plateau[position[0] + i][position[1] + j] != 0)
+                    or position[0] + i >= len(board)  # si la position est en dehors du plateau dans le pos
+                    or position[1] + j >= len(board[0])  # si la position est en dehors du plateau dans le pos
+                    or (piece[i][j] != 0 and board[position[0] + i][position[1] + j] != 0)
                     # si la case est deja prise
             ):
                 return False
     return True
 
 # Fonction pour afficher le plateau
-def afficher_plateau(table):
+def showBoard(table):
     for ligne in table.plateau:
-        ligne_affichee = ""
+        showLine = ""
         for case in ligne:
             if case == 0:
-                ligne_affichee += " . "
+                showLine += " . "
             else:
-                ligne_affichee += " " + chr(ord('A') + case - 1) + " "
+                showLine += " " + chr(ord('A') + case - 1) + " "
 
-        print(ligne_affichee)
+        print(showLine)
 
 
 # table = plateau(5, 11)

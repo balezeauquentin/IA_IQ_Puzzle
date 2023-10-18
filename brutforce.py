@@ -8,8 +8,8 @@ def brutforce(affichage, used_pieces, position=(0, 0)):
     if 0 not in used_pieces:
         # Toutes les pièces ont été utilisées, nous avons une solution.
         print("Solution trouvée:")
-        plateau_solution = jeu.Plateau(len(table), len(table[0]))
-        plateau_solution.plateau = table
+        plateau_solution = jeu.Board(len(table), len(table[0]))
+        plateau_solution.board = table
         plateau_solution.afficher_tableau_console()
         affichage.update()
         return
@@ -29,16 +29,16 @@ def brutforce(affichage, used_pieces, position=(0, 0)):
     if i == len(table):
         # Toutes les cases ont été remplies, mais nous n'avons pas encore de solution.
         return
-    temp_table = jeu.Plateau(len(table), len(table[0]))
-    temp_table.plateau = [row[:] for row in table]
+    temp_table = jeu.Board(len(table), len(table[0]))
+    temp_table.board = [row[:] for row in table]
     for piece_id in range(1, 13):  # Mise à jour pour 12 pièces
         if used_pieces[piece_id - 1] == 0:
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
             for _ in range(4):
 
-                if jeu.peut_placer_piece(table, current_piece.piece, (i, j)):
+                if jeu.verifPlacePiece(table, current_piece.piece, (i, j)):
 
-                    jeu.placer_piece(temp_table, current_piece, (i, j))
+                    jeu.placePiece(temp_table, current_piece, (i, j))
                     next_position = (i, j + 1)
                     if next_position[1] == len(table[0]):
                         next_position = (i + 1, 0)
