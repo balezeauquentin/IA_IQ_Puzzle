@@ -8,7 +8,7 @@ import interface
 #                 if i==0 or table.board[i-1][j]!=0 and i==
 
 
-def brutforce(affichage, used_pieces, position=(0, 0)):
+def brutforce(affichage, used_pieces,ayaya, position=(0, 0)):
     affichage.update()
     table = affichage.plateau
     if 0 not in used_pieces:
@@ -40,9 +40,14 @@ def brutforce(affichage, used_pieces, position=(0, 0)):
     for piece_id in range(1, 13):  # Mise à jour pour 12 pièces
         if used_pieces[piece_id - 1] == 0:
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
+
             for _ in range(4):
 
+<<<<<<< Updated upstream
                 if table.canPlaceShape(current_piece.piece, (i, j)):
+=======
+                if table.canPlaceShape(current_piece, (i, j)):
+>>>>>>> Stashed changes
 
                     temp_table.placeShape(current_piece, (i, j))
                     next_position = (i, j + 1)
@@ -50,12 +55,14 @@ def brutforce(affichage, used_pieces, position=(0, 0)):
                         next_position = (i + 1, 0)
                     used_pieces[piece_id - 1] = 1
                     updated_used_pieces = used_pieces[:]
-
+                    ayaya=ayaya+piece_id
                     # temp_table.afficher_tableau_console()
                     affichage.plateau = temp_table
-                    brutforce(affichage, updated_used_pieces, next_position)
+                    print(ayaya)
+                    brutforce(affichage, updated_used_pieces,ayaya, next_position)
+                    affichage.remove(piece_id)
                 current_piece.turnPiece()  # Renomme la fonction pour éviter le conflit de noms
 
 if __name__ == "__main__":
     a = interface.Interface()
-    brutforce(a, [0 for _ in range(12)])
+    brutforce(a, [0 for _ in range(12)],0)
