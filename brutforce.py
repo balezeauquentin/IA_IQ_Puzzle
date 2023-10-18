@@ -43,11 +43,7 @@ def brutforce(affichage, used_pieces,ayaya, position=(0, 0)):
 
             for _ in range(4):
 
-<<<<<<< Updated upstream
-                if table.canPlaceShape(current_piece.piece, (i, j)):
-=======
                 if table.canPlaceShape(current_piece, (i, j)):
->>>>>>> Stashed changes
 
                     temp_table.placeShape(current_piece, (i, j))
                     next_position = (i, j + 1)
