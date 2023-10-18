@@ -130,7 +130,7 @@ class Interface:
         if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
             self.change_piece_id("-")
         if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
-            self.held_shape.tourner_piece_horraire()
+            self.held_shape.turnPiece()
 
         self.previous_keys = keys
 

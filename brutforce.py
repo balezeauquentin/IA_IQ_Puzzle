@@ -48,7 +48,7 @@ def brutforce(affichage, used_pieces, position=(0, 0)):
                     # temp_table.afficher_tableau_console()
                     affichage.plateau = temp_table
                     brutforce(affichage, updated_used_pieces, next_position)
-                current_piece.tourner_piece_horraire()  # Renomme la fonction pour éviter le conflit de noms
+                current_piece.turnPiece()  # Renomme la fonction pour éviter le conflit de noms
 
 if __name__ == "__main__":
     a = interface.Interface()

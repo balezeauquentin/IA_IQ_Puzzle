@@ -123,7 +123,7 @@ class Piece:
                 [0,0,12]
             ]
             
-    def tourner_piece_horraire(self):
+    def turnPiece(self):
         self.piece = [list(reversed(col)) for col in zip(*self.piece)]
 
 
