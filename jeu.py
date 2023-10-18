@@ -30,7 +30,7 @@ class Board:
     # Fonction pour placer une pièce sur le plateau
     def placeShape(self, piece, position):
         if self.canPlaceShape(piece, position):
-            #self.used_shapes.append(piece.id)
+            # self.used_shapes.append(piece.id)
             for i in range(len(piece.piece)):
                 for j in range(len(piece.piece[0])):
                     if piece.piece[i][j] != 0:

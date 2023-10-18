@@ -2,7 +2,6 @@ import pygame as pg
 from jeu import *
 
 # TODO:
-# Finir la preview de la piece avant de la poser
 # Ameliorer les graphismes
 
 
@@ -156,10 +155,13 @@ class Interface:
             self.changeShapeID("-")
         if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
             self.held_shape.turnPiece()
+        if keys[pg.K_e] and keys[pg.K_r] != self.previous_keys[pg.K_e]:
+            # Implémenter la méthode pour mirroirer une pièce
+            pass
 
         self.previous_keys = keys
 
-    def changeShapeID(self,mode:str) -> None:
+    def changeShapeID(self, mode:str) -> None:
         """
         Changes the ID of the shape currently in the players hand
         Does checking to make sure the ID does go higher than the number of shapes present in the game
