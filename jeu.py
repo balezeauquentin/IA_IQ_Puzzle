@@ -30,15 +30,16 @@ class Board:
     # Fonction pour placer une pièce sur le plateau
     def placeShape(self, piece, position):
         if self.canPlaceShape(piece, position):
-            # self.used_shapes.append(piece.id)
+            self.used_shapes.append(piece.id)
             for i in range(len(piece.piece)):
                 for j in range(len(piece.piece[0])):
                     if piece.piece[i][j] != 0:
                         self[position[0] + i][position[1] + j] = piece.piece[i][j]
             # afficher_plateau(plateau)
+            self.isFinished()
             return True
         else:
-            print("Impossible de placer la pièce ici", self.used_shapes)
+            # print("Impossible de placer la pièce ici", self.used_shapes)
             return False
 
     # Fonction pour vérifier si une pièce peut être placée à un certain endroit
@@ -56,6 +57,14 @@ class Board:
                         # si la case est deja prise
                 ):
                     return False
+        return True
+    
+    def isFinished(self):
+        for line in self:
+            for case in line:
+                if case == 0:
+                    return False
+        print("You win")
         return True
 
 
