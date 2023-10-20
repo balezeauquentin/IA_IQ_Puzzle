@@ -1,4 +1,5 @@
 import pygame as pg
+from pygame import gfxdraw as gfx
 from jeu import *
 
 # TODO:
@@ -66,6 +67,39 @@ class Interface:
                 color = None
 
             return color
+        
+        def getColorFromID2(id:int):
+            """
+            Returns a color given the ID of a shape
+            """
+            if id == 1:
+                color = Interface.Colors.RED
+            elif id == 2:
+                color = Interface.Colors.BLUE
+            elif id == 3:
+                color = Interface.Colors.GREEN
+            elif id == 4:
+                color = Interface.Colors.MAGENTA
+            elif id == 5:
+                color = Interface.Colors.CYAN
+            elif id == 6:
+                color = Interface.Colors.YELLOW
+            elif id == 7:
+                color = Interface.Colors.ORANGE
+            elif id == 8:
+                color = Interface.Colors.PINK
+            elif id == 9:
+                color = Interface.Colors.PURPLE
+            elif id == 10:
+                color = Interface.Colors.DARK_GREEN
+            elif id == 11:
+                color = Interface.Colors.GREY
+            elif id == 12:
+                color = Interface.Colors.BLACK
+            else:
+                color = None
+
+            return color
 
 
     def __init__(self, height = 5, width = 11) -> None:
@@ -119,8 +153,10 @@ class Interface:
 
     def drawSquare(self, squareID:int, x:int, y:int) -> None:
         # radius = 40
-        # pg.draw.circle(self.screen, getColorFromID(squareID), (x+self.SQUARE_SIZE/2, y+self.SQUARE_SIZE/2), radius)
-        pg.draw.rect(self.screen, Interface.Colors.getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
+        # # Draw the disk representing one part of a shape
+        # gfx.aacircle(self.screen, int(x+self.SQUARE_SIZE/2), int(y+self.SQUARE_SIZE/2), radius, Interface.Colors.getColorFromID(squareID))
+        # gfx.filled_circle(self.screen, int(x+self.SQUARE_SIZE/2), int(y+self.SQUARE_SIZE/2), radius, Interface.Colors.getColorFromID(squareID))
+        pg.draw.rect(self.screen, Interface.Colors.getColorFromID2(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
 
     def drawPreview(self) -> None:
         # Create a surface to enable alpha channel
