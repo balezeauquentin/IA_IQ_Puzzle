@@ -1,4 +1,3 @@
-import jeu
 import interface
 import brutforce
 
