@@ -22,10 +22,7 @@ def case_isolee(plateau, ligne, colonne):
 
     return True  # Toutes les cases voisines sont différentes de zéro, la case est isolée
 def table_a_des_cases_isolees(plateau):
-    for i in range(len(plateau)):
-        for j in range(len(plateau[0])):
-            if plateau[i][j] == 0 and case_isolee(plateau, i, j):
-                return False
+
     return True
 
 
@@ -40,8 +37,27 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
         plateau_solution.printBoard()
         affichage.update()
         return
-    if not table_a_des_cases_isolees(table):
-        return
+    a=0
+    b=0
+    while a!=position[0] or b!=position[1]:
+        if table[a][b] == 0 and case_isolee(table, a, b):
+            return False
+        elif table[a][b] == 0:
+            for idpiece in range(1, 13):
+                for _ in range(2):
+                    for _ in range(4):
+                        if table.canPlaceShape(jeu.Piece(idpiece), (a, b)):
+                            table.placeShape(jeu.Piece(idpiece), (a, b))
+                            return True
+                    jeu.Piece(idpiece).turnClockwise()
+                jeu.Piece(idpiece).mirror()
+            return False
+        b=b+1
+        if b==len(table[0]):
+            b=0
+            a=a+1
+
+
 
     i, j = position
 
