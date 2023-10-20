@@ -65,26 +65,28 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
     for piece_id in range(1, 13):  # Mise à jour pour 12 pièces
         if used_pieces[piece_id - 1] == 0:
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
+            for _ in range(2):
+                current_piece.mirror()
 
-            for _ in range(4):
+                for _ in range(4):
 
-                if table.canPlaceShape(current_piece, (i, j)):
+                    if table.canPlaceShape(current_piece, (i, j)):
 
-                    temp_table.placeShape(current_piece, (i, j))
-                    next_position = (i, j + 1)
-                    if next_position[1] == len(table[0]):
-                        next_position = (i + 1, 0)
+                        temp_table.placeShape(current_piece, (i, j))
+                        next_position = (i, j + 1)
+                        if next_position[1] == len(table[0]):
+                            next_position = (i + 1, 0)
 
-                    updated_used_pieces = used_pieces[:]
-                    updated_used_pieces[piece_id - 1] = 1
+                        updated_used_pieces = used_pieces[:]
+                        updated_used_pieces[piece_id - 1] = 1
 
-                    affichage.board.board=temp_table.board
-                    brutforce(affichage, updated_used_pieces,temp_table, next_position)
-                    affichage.removeShape(piece_id)
-                    used_pieces[piece_id - 1] = 0
-                    temp_table.board = [row[:] for row in table]
+                        affichage.board.board=temp_table.board
+                        brutforce(affichage, updated_used_pieces,temp_table, next_position)
+                        affichage.removeShape(piece_id)
+                        used_pieces[piece_id - 1] = 0
+                        temp_table.board = [row[:] for row in table]
 
-                current_piece.turnClockwise()  # Renomme la fonction pour éviter le conflit de noms
+                    current_piece.turnClockwise()  # Renomme la fonction pour éviter le conflit de noms
 
 if __name__ == "__main__":
     a = interface.Interface()
