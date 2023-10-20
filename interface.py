@@ -1,4 +1,5 @@
 import pygame as pg
+from pygame import gfxdraw as gfx
 from jeu import *
 
 # TODO:
@@ -14,21 +15,60 @@ class Interface:
 
     # Couleurs (r,g,b)
     class Colors:
-        RED = (255, 0, 0)
-        BLUE = (0, 0, 255)
+        RED = (220, 25, 0)
+        DARK_BLUE = (20, 39, 150)
         GREEN = (0, 255, 0)
         MAGENTA = (255, 0, 255)
         CYAN = (0, 255, 255)
         YELLOW = (255, 255, 0)
-        PINK = (255, 0, 128)
-        PURPLE = (192, 0, 192)
+        PINK = (255, 0, 192)
+        PURPLE = (64, 0, 64)
         ORANGE = (255, 128, 0)
         DARK_GREEN = (0, 255, 128)
         GREY = (128, 128, 128)
         BLACK = (0, 0, 0)
-        WHITE = (255, 255 ,255)   
+        LIME_GREEN = (150, 255, 50)
+        WHITE = (255, 255 ,255) 
+        LIGHT_BLUE = (150, 225, 255)
+        BLUE = (100, 100, 255)
+        TURQUOIZE = (0 ,125, 125)
+        DARK_RED = (150, 0, 50)
+        DARK_GREY = (64,64,64)
         
         def getColorFromID(id:int):
+            """
+            Returns a color given the ID of a shape
+            """
+            if id == 1:
+                color = Interface.Colors.DARK_BLUE
+            elif id == 2:
+                color = Interface.Colors.RED
+            elif id == 3:
+                color = Interface.Colors.LIGHT_BLUE
+            elif id == 4:
+                color = Interface.Colors.BLUE
+            elif id == 5:
+                color = Interface.Colors.LIME_GREEN
+            elif id == 6:
+                color = Interface.Colors.TURQUOIZE
+            elif id == 7:
+                color = Interface.Colors.DARK_RED
+            elif id == 8:
+                color = Interface.Colors.YELLOW
+            elif id == 9:
+                color = Interface.Colors.ORANGE
+            elif id == 10:
+                color = Interface.Colors.DARK_GREEN
+            elif id == 11:
+                color = Interface.Colors.PINK
+            elif id == 12:
+                color = Interface.Colors.PURPLE
+            else:
+                color = None
+
+            return color
+        
+        def getColorFromID2(id:int):
             """
             Returns a color given the ID of a shape
             """
@@ -74,7 +114,7 @@ class Interface:
         self.board = Board(height, width)
 
         # Creates the pygame window
-        self.bkg_color = Interface.Colors.WHITE
+        self.bkg_color = Interface.Colors.DARK_GREY
         self.WIN_WIDTH = width * self.SQUARE_SIZE
         self.WIN_HEIGHT = height * self.SQUARE_SIZE
         self.screen = pg.display.set_mode((self.WIN_WIDTH , self.WIN_HEIGHT))
@@ -113,8 +153,10 @@ class Interface:
 
     def drawSquare(self, squareID:int, x:int, y:int) -> None:
         # radius = 40
-        # pg.draw.circle(self.screen, getColorFromID(squareID), (x+self.SQUARE_SIZE/2, y+self.SQUARE_SIZE/2), radius)
-        pg.draw.rect(self.screen, Interface.Colors.getColorFromID(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
+        # # Draw the disk representing one part of a shape
+        # gfx.aacircle(self.screen, int(x+self.SQUARE_SIZE/2), int(y+self.SQUARE_SIZE/2), radius, Interface.Colors.getColorFromID(squareID))
+        # gfx.filled_circle(self.screen, int(x+self.SQUARE_SIZE/2), int(y+self.SQUARE_SIZE/2), radius, Interface.Colors.getColorFromID(squareID))
+        pg.draw.rect(self.screen, Interface.Colors.getColorFromID2(squareID), pg.Rect(x, y, self.SQUARE_SIZE, self.SQUARE_SIZE))
 
     def drawPreview(self) -> None:
         # Create a surface to enable alpha channel

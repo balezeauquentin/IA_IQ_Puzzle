@@ -90,4 +90,4 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
 
 if __name__ == "__main__":
     a = interface.Interface()
-    brutforce(a, [0 for _ in range(12)],a.board)
+    brutforce(a, [0 for _ in range(12)], a.board)
