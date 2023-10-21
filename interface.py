@@ -190,7 +190,7 @@ class Interface:
                     id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
                     self.removeShape(id)
 
-        if keys[pg.K_ESCAPE] :
+        if keys[pg.K_ESCAPE]:
             self.isRunning = False
         if keys[pg.K_LEFT] and keys[pg.K_LEFT] != self.previous_keys[pg.K_LEFT]:
             self.changeShapeID("+")

@@ -39,15 +39,23 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
         return
     a=0
     b=0
-    while a!=position[0] or b!=position[1]:
+    while a!=len(table):
         if table[a][b] == 0 and case_isolee(table, a, b):
             return False
-        elif table[a][b] == 0:
+        b = b + 1
+        if b == len(table[0]):
+            b = 0
+            a = a + 1
+    a=0
+    b=0
+    while a!=position[0] or b!=position[1]:
+        if table[a][b] == 0:
             for idpiece in range(1, 13):
                 for _ in range(2):
                     for _ in range(4):
                         if table.canPlaceShape(jeu.Piece(idpiece), (a, b)):
                             table.placeShape(jeu.Piece(idpiece), (a, b))
+                            used_pieces[idpiece - 1] = 1
                             return True
                     jeu.Piece(idpiece).turnClockwise()
                 jeu.Piece(idpiece).mirror()
@@ -56,6 +64,7 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
         if b==len(table[0]):
             b=0
             a=a+1
+
 
 
 
