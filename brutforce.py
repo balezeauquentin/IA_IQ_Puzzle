@@ -1,6 +1,7 @@
 import jeu
 import interface
 
+
 # def find_isoalte_celle(table: jeu.Board):
 #     for i in range(len(table.board)):
 #         for j in range(len(table.board[0])):
@@ -14,19 +15,20 @@ def case_isolee(plateau, ligne, colonne):
     # Vérifie si **toutes** les cases voisines sont différentes de zéro
     for voisin_ligne, voisin_colonne in voisins:
         if (
-            0 <= voisin_ligne < len(plateau) and  # Vérifie si les coordonnées sont dans les limites du plateau
-            0 <= voisin_colonne < len(plateau[0]) and
-            plateau[voisin_ligne][voisin_colonne] == 0
+                0 <= voisin_ligne < len(plateau) and  # Vérifie si les coordonnées sont dans les limites du plateau
+                0 <= voisin_colonne < len(plateau[0]) and
+                plateau[voisin_ligne][voisin_colonne] == 0
         ):
             return False  # Il y a au moins une case vide à proximité, la case n'est pas isolée
 
     return True  # Toutes les cases voisines sont différentes de zéro, la case est isolée
-def table_a_des_cases_isolees(plateau):
 
+
+def table_a_des_cases_isolees(plateau):
     return True
 
 
-def brutforce(affichage, used_pieces,table, position=(0, 0)):
+def brutforce(affichage, used_pieces, table, position=(0, 0)):
     affichage.update()
 
     if 0 not in used_pieces:
@@ -37,18 +39,18 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
         plateau_solution.printBoard()
         affichage.update()
         return
-    a=0
-    b=0
-    while a!=len(table):
+    a = 0
+    b = 0
+    while a != len(table):
         if table[a][b] == 0 and case_isolee(table, a, b):
             return False
         b = b + 1
         if b == len(table[0]):
             b = 0
             a = a + 1
-    a=0
-    b=0
-    while a!=position[0] or b!=position[1]:
+    a = 0
+    b = 0
+    while a != position[0] or b != position[1]:
         if table[a][b] == 0:
             for idpiece in range(1, 13):
                 for _ in range(2):
@@ -60,13 +62,10 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
                     jeu.Piece(idpiece).turnClockwise()
                 jeu.Piece(idpiece).mirror()
             return False
-        b=b+1
-        if b==len(table[0]):
-            b=0
-            a=a+1
-
-
-
+        b = b + 1
+        if b == len(table[0]):
+            b = 0
+            a = a + 1
 
     i, j = position
 
@@ -90,10 +89,16 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
     for piece_id in range(1, 13):  # Mise à jour pour 12 pièces
         if used_pieces[piece_id - 1] == 0:
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
+            debut = True
             for _ in range(2):
                 current_piece.mirror()
 
                 for _ in range(4):
+                    if current_piece[0][0] == 0:
+                        if debut:
+                            position =position[0], position[1] + len(current_piece) - 1
+                        else:
+                            position =position[0], position[1] - len(current_piece) + 1
 
                     if table.canPlaceShape(current_piece, (i, j)):
 
@@ -105,21 +110,24 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
                         updated_used_pieces = used_pieces[:]
                         updated_used_pieces[piece_id - 1] = 1
 
-                        affichage.board.board=temp_table.board
-                        brutforce(affichage, updated_used_pieces,temp_table, next_position)
+                        affichage.board.board = temp_table.board
+                        brutforce(affichage, updated_used_pieces, temp_table, next_position)
                         affichage.removeShape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
 
                     current_piece.turnClockwise()  # Renomme la fonction pour éviter le conflit de noms
-def lunch_brutforce(a:interface.Interface):
-    b=a.board
-    used_pieces=[0 for _ in range(12)]
+
+
+def lunch_brutforce(a: interface.Interface):
+    b = a.board
+    used_pieces = [0 for _ in range(12)]
     for ligne in b:
         for val in ligne:
-            if val !=0:
-                used_pieces[val-1]=1
-    brutforce(a,used_pieces,b)
+            if val != 0:
+                used_pieces[val - 1] = 1
+    brutforce(a, used_pieces, b)
+
 
 if __name__ == "__main__":
     a = interface.Interface()

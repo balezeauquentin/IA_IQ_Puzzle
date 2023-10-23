@@ -165,6 +165,10 @@ class Piece:
                 [0,12,12],
                 [0,0,12]
             ]
+    def __len__(self):
+        return len(self.piece)
+    def __getitem__(self, item):
+        return self.piece[item]
             
     def turnClockwise(self):
         self.piece = [list(reversed(col)) for col in zip(*self.piece)]
