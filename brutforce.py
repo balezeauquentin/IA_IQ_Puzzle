@@ -112,6 +112,14 @@ def brutforce(affichage, used_pieces,table, position=(0, 0)):
                         temp_table.board = [row[:] for row in table]
 
                     current_piece.turnClockwise()  # Renomme la fonction pour éviter le conflit de noms
+def lunch_brutforce(a:interface.Interface):
+    b=a.board
+    used_pieces=[0 for _ in range(12)]
+    for ligne in b:
+        for val in ligne:
+            if val !=0:
+                used_pieces[val-1]=1
+    brutforce(a,used_pieces,b)
 
 if __name__ == "__main__":
     a = interface.Interface()

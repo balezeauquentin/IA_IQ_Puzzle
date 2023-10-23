@@ -1,5 +1,7 @@
 import pygame as pg
 from pygame import gfxdraw as gfx
+
+import brutforce
 from jeu import *
 
 # TODO:
@@ -200,6 +202,8 @@ class Interface:
             self.held_shape.turnClockwise()
         if keys[pg.K_e] and keys[pg.K_e] != self.previous_keys[pg.K_e]:
             self.held_shape.mirror()
+        if keys[pg.K_p] and keys[pg.K_p] != self.previous_keys[pg.K_p]:
+            brutforce.lunch_brutforce(self)
 
         self.previous_keys = keys
 
