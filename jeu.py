@@ -39,7 +39,7 @@ class Board:
             self.isFinished()
             return True
         else:
-            # print("Impossible de placer la pièce ici", self.used_shapes)
+            # print("Impossible de placer la pièce ici", position)
             return False
 
     # Fonction pour vérifier si une pièce peut être placée à un certain endroit

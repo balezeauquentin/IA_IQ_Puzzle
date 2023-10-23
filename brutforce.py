@@ -28,8 +28,8 @@ def table_a_des_cases_isolees(plateau):
     return True
 
 
-def brutforce(affichage, used_pieces, table, position=(0, 0)):
-    affichage.update()
+def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)):
+    affichage.draw()
 
     if 0 not in used_pieces:
         # Toutes les pièces ont été utilisées, nous avons une solution.
@@ -37,7 +37,7 @@ def brutforce(affichage, used_pieces, table, position=(0, 0)):
         plateau_solution = jeu.Board(len(table), len(table[0]))
         plateau_solution.board = table
         plateau_solution.printBoard()
-        affichage.update()
+        affichage.draw()
         return
     a = 0
     b = 0
@@ -119,7 +119,7 @@ def brutforce(affichage, used_pieces, table, position=(0, 0)):
                     current_piece.turnClockwise()  # Renomme la fonction pour éviter le conflit de noms
 
 
-def lunch_brutforce(a: interface.Interface):
+def launch_brutforce(a: interface.Interface):
     b = a.board
     used_pieces = [0 for _ in range(12)]
     for ligne in b:
