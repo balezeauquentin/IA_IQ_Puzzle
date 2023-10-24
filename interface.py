@@ -108,6 +108,7 @@ class Interface:
         # Used to make sure when a key is held down that we only press it once
         self.previous_keys = []
         self.pos_rectified = (0,0)
+
         # By default select the first shape
         self.held_shape_id = 1
         self.held_shape = Piece(self.held_shape_id)
@@ -157,7 +158,7 @@ class Interface:
     def drawGrid(self) -> None:
         #Draws horizontal lines
         for y in range(len(self.board)):
-            pg.draw.line(self.screen, Interface.Colors.BLACK, (self.GRID_OFFSET[0], y*self.SQUARE_SIZE +self.GRID_OFFSET[1]), (self.WIN_WIDTH, y*self.SQUARE_SIZE + self.GRID_OFFSET[1]))
+            pg.draw.line(self.screen, Interface.Colors.BLACK, (self.GRID_OFFSET[0], y*self.SQUARE_SIZE +self.GRID_OFFSET[1]), (self.WIN_WIDTH + self.GRID_OFFSET[0], y*self.SQUARE_SIZE + self.GRID_OFFSET[1]))
 
         # Draws vertical lines
         for x in range(len(self.board[0])):
@@ -179,8 +180,8 @@ class Interface:
                     c = Interface.Colors.getColorFromID2(self.held_shape_id)
                     pg.draw.rect(sur, (*c, 10),pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
                     self.screen.blit(sur, (
-                                        (self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE + self.GRID_OFFSET[0],
-                                        (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE + self.GRID_OFFSET[1]
+                                            (self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE + self.GRID_OFFSET[0],
+                                            (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE + self.GRID_OFFSET[1]
                                         )
                     )
 
@@ -234,12 +235,8 @@ class Interface:
         """
         if mode == "+" and self.held_shape_id < 12:
             self.held_shape_id += 1
-            while self.held_shape_id in self.board.used_shapes:
-                self.held_shape_id += 1
         elif mode == "-" and self.held_shape_id > 1:
             self.held_shape_id -= 1
-            while self.held_shape_id in self.board.used_shapes:
-                self.held_shape_id -= 1
         elif mode == "+" and self.held_shape_id == 12:
             self.held_shape_id = 1
         elif mode == "-" and self.held_shape_id == 1:
