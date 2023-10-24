@@ -1,17 +1,15 @@
 import pygame as pg
-from typing import Callable, Any, TypeAlias, Optional
 
 class Button:
-    cbargs : TypeAlias = Any
     def __init__(self, pos:tuple[int,int],
                  size:tuple[int,int],
                  screen:pg.Surface,
-                 callback:Callable[[cbargs], None],
-                 *callbak_args: cbargs,
-                 bg_color: tuple[int,int,int,Optional[int]] = (0,0,0),
-                 text:Optional[str] = None,
-                 text_color:tuple[int,int,int,Optional[int]] = (255,255,255),
-                 border_color:tuple[int,int,int,Optional[int]] = (255,255,255),
+                 callback,
+                 *callbak_args,
+                 bg_color: tuple[int,int,int,int|None] = (0,0,0),
+                 text:str|None = None,
+                 text_color:tuple[int,int,int,int|None] = (255,255,255),
+                 border_color:tuple[int,int,int,int|None] = (255,255,255),
                  border_size:int = 1,
                  font:str = "Verdana.ttf",
                  font_size:int = 24,
@@ -59,14 +57,13 @@ class Button:
             self.screen.blit(text_draw, text_draw_rect)
     
     def update(self) -> None:
-        self.isClicked()
+        self.onClick()
         self.prev_state = pg.mouse.get_pressed()[0]
 
     def isHovered(self) -> bool:
         return self.rect.collidepoint(pg.mouse.get_pos())
 
-    def isClicked(self) -> None:
+    def onClick(self) -> None:
         if (pg.mouse.get_pressed()[0] and self.isHovered() and not self.prev_state):
-            print("Click")
             self.callback(*self.callback_args)
             self.prev_state = True
