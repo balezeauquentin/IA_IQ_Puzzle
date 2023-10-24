@@ -115,7 +115,7 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
                         affichage.removeShape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
-                    if current_piece.can_rotate==True:
+                    if current_piece.can_rotate:
                         current_piece.turnClockwise()
                     else:
                         break
