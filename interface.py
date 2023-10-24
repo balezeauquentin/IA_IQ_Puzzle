@@ -169,16 +169,16 @@ class Interface:
         pg.draw.rect(self.screen, Interface.Colors.getColorFromID2(squareID), square)
 
     def drawPreview(self) -> None:
-        # Create a surface to enable alpha channel
         if not self.isMouseInGrid():
             return
+        # Create a surface to enable alpha channe²
         sur = pg.Surface((self.SQUARE_SIZE, self.SQUARE_SIZE))
         sur.set_alpha(64)
         for shapeX in range(len(self.held_shape.piece)):
             for shapeY in range(len(self.held_shape.piece[shapeX])):
                 if self.held_shape.piece[shapeX][shapeY] != 0 :
                     c = Interface.Colors.getColorFromID2(self.held_shape_id)
-                    pg.draw.rect(sur, (*c, 10),pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
+                    pg.draw.rect(sur, c,pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
                     self.screen.blit(sur, (
                                             (self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE + self.GRID_OFFSET[0],
                                             (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE + self.GRID_OFFSET[1]
@@ -205,9 +205,9 @@ class Interface:
         if keys[pg.K_ESCAPE]:
             self.quit()
         if keys[pg.K_LEFT] and keys[pg.K_LEFT] != self.previous_keys[pg.K_LEFT]:
-            self.changeShapeID("+")
+            self.incShapeId()
         if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
-            self.changeShapeID("-")
+            self.decShapeId()
         if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
             self.held_shape.turnClockwise()
         if keys[pg.K_e] and keys[pg.K_e] != self.previous_keys[pg.K_e]:
@@ -228,23 +228,28 @@ class Interface:
         rectified = int((mousePos[1] - self.GRID_OFFSET[1])/ self.SQUARE_SIZE), int((mousePos[0] - self.GRID_OFFSET[0])/ self.SQUARE_SIZE)
         return rectified
 
-    def changeShapeID(self, mode:str) -> None:
-        """
-        Changes the ID of the shape currently in the players hand
-        Does checking to make sure the ID does go higher than the number of shapes present in the game
-        """
-        if mode == "+" and self.held_shape_id < 12:
+    def incShapeId(self) -> None:
+        if self.held_shape_id < 12:
             self.held_shape_id += 1
-        elif mode == "-" and self.held_shape_id > 1:
-            self.held_shape_id -= 1
-        elif mode == "+" and self.held_shape_id == 12:
-            self.held_shape_id = 1
-        elif mode == "-" and self.held_shape_id == 1:
-            self.held_shape_id = 12
         else:
             self.held_shape_id = 1
+        while self.held_shape_id in self.board.used_shapes:
+            if self.held_shape_id < 12:
+                self.held_shape_id += 1
+            else:
+                self.held_shape_id = 1
+        self.held_shape = Piece(self.held_shape_id)
 
-        print(self.held_shape_id)
+    def decShapeId(self) -> None:
+        if self.held_shape_id > 1:
+            self.held_shape_id -= 1
+        else:
+            self.held_shape_id = 12
+        while self.held_shape_id in self.board.used_shapes:
+            if self.held_shape_id > 1:
+                self.held_shape_id -= 1
+            else:
+                self.held_shape_id = 12
         self.held_shape = Piece(self.held_shape_id)
 
     def removeShape(self, id:int) -> None:
