@@ -28,7 +28,7 @@ def table_a_des_cases_isolees(plateau):
     return True
 
 
-def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)):
+def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
     affichage.draw()
 
     if 0 not in used_pieces:
@@ -95,11 +95,10 @@ def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)
 
                 for _ in range(4):
                     position = i, j
-                    if current_piece[0][0] == 0:
-
-                        position =position[0], position[1] - len(current_piece) + 1
-
-
+                    m = 0
+                    while current_piece[0][m] == 0:
+                        m = m + 1
+                    position = position[0], position[1] - m
 
                     if table.canPlaceShape(current_piece, position):
 
