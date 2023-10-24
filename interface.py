@@ -1,14 +1,17 @@
 import pygame as pg
 from button import Button
-
 import brutforce
 from jeu import *
 
 # TODO:
 # Ameliorer les graphismes
+# Afficher un ecran de victoire
 
 
 class Interface:
+    """
+    Get ready to ready a lot of ugly and boring code !
+    """
 
     #Default size of a square from a shape
     SQUARE_SIZE = 100
@@ -96,7 +99,7 @@ class Interface:
             elif id == 11:
                 color = Interface.Colors.GREY
             elif id == 12:
-                color = Interface.Colors.BLACK
+                color = Interface.Colors.WHITE
             else:
                 color = None
 
@@ -124,6 +127,7 @@ class Interface:
         pg.display.set_caption(self.TITLE)
 
         self.isRunning = True
+        self.game_finished = False
 
         self.buttons:list[Button] = []
         self.launch_bruteforce_but = Button((self.SQUARE_SIZE/2, self.SQUARE_SIZE/4), (self.SQUARE_SIZE,self.SQUARE_SIZE/2), self.screen, brutforce.launch_brutforce, self, text="Test")
@@ -142,6 +146,9 @@ class Interface:
         self.drawGrid()
         for but in self.buttons:
             but.draw()
+
+        if self.game_finished:
+            self.drawWinScreen()
         pg.display.flip() 
         pg.display.update()
 
@@ -189,6 +196,9 @@ class Interface:
         """
         Call events() before draw()
         """
+        if self.game_finished:
+            return
+
         self.mouse_pos = pg.mouse.get_pos()
         self.pos_rectified =  self.rectifyMousePosition()
         keys = pg.key.get_pressed()
@@ -198,6 +208,8 @@ class Interface:
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == pg.BUTTON_LEFT and self.isMouseInGrid():
                     self.board.placeShape(self.held_shape, self.pos_rectified)
+                    if self.board.isFinished():
+                        self.game_finished = True
                 if event.button == pg.BUTTON_RIGHT:
                     id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
                     self.removeShape(id)
@@ -269,6 +281,21 @@ class Interface:
     def isMouseInGrid(self) -> bool:
         grid_rect = pg.Rect(self.GRID_OFFSET, (self.WIN_WIDTH, self.WIN_HEIGHT))
         return grid_rect.collidepoint(self.mouse_pos)
+    
+    def drawWinScreen(self) -> None:
+        winRect = pg.Rect(self.WIN_WIDTH//4, self.WIN_HEIGHT//4, self.WIN_WIDTH//2, self.WIN_HEIGHT//2)
+        winRectBorder = pg.Rect(winRect.left-1, winRect.top-1, winRect.width+2, winRect.height+2)
+        pg.draw.rect(self.screen, self.Colors.WHITE, winRectBorder)
+        pg.draw.rect(self.screen, self.Colors.BLACK, winRect)
+
+        # Draws the text
+        text = pg.font.SysFont("verdana.ttf", 48)
+        text_draw = text.render("You have won !", True, self.Colors.WHITE)
+        text_draw_rect = text_draw.get_rect()
+        text_draw_rect.center = winRect.center
+        self.screen.blit(text_draw, text_draw_rect)
+
+
 
 
 

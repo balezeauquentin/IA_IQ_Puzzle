@@ -36,7 +36,6 @@ class Board:
                     if piece.piece[i][j] != 0:
                         self[position[0] + i][position[1] + j] = piece.piece[i][j]
             # afficher_plateau(plateau)
-            self.isFinished()
             return True
         else:
             # print("Impossible de placer la pièce ici", position)
@@ -64,7 +63,6 @@ class Board:
             for case in line:
                 if case == 0:
                     return False
-        print("You win")
         return True
 
 
