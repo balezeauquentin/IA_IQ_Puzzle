@@ -234,8 +234,12 @@ class Interface:
         """
         if mode == "+" and self.held_shape_id < 12:
             self.held_shape_id += 1
+            while self.held_shape_id in self.board.used_shapes:
+                self.held_shape_id += 1
         elif mode == "-" and self.held_shape_id > 1:
             self.held_shape_id -= 1
+            while self.held_shape_id in self.board.used_shapes:
+                self.held_shape_id -= 1
         elif mode == "+" and self.held_shape_id == 12:
             self.held_shape_id = 1
         elif mode == "-" and self.held_shape_id == 1:
@@ -243,6 +247,7 @@ class Interface:
         else:
             self.held_shape_id = 1
 
+        print(self.held_shape_id)
         self.held_shape = Piece(self.held_shape_id)
 
     def removeShape(self, id:int) -> None:
