@@ -23,9 +23,9 @@ class Button:
         self.border_size = border_size
         self.callback = callback
 
-        if (pos[0] == "centered"):
+        if (pos[0] == -1):
             pos = (self.screen.get_width()//2-size[0]//2, pos[1])
-        if (pos[1] == "centered"):
+        if (pos[1] == -1):
             pos = (pos[0], self.screen.get_height()//2-size[1]/2)
 
         self.rect = pg.Rect(pos, size)
@@ -57,13 +57,13 @@ class Button:
             self.screen.blit(text_draw, text_draw_rect)
     
     def update(self) -> None:
-        self.onClick()
+        if (pg.mouse.get_pressed()[0] and self.isHovered() and not self.prev_state):
+            self.onClick()
         self.prev_state = pg.mouse.get_pressed()[0]
 
     def isHovered(self) -> bool:
         return self.rect.collidepoint(pg.mouse.get_pos())
 
     def onClick(self) -> None:
-        if (pg.mouse.get_pressed()[0] and self.isHovered() and not self.prev_state):
-            self.callback(*self.callback_args)
-            self.prev_state = True
+        self.callback(*self.callback_args)
+        self.prev_state = True
