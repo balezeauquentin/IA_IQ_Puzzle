@@ -79,6 +79,7 @@ class Piece:
                 [1, 0],
                 [1, 1]
             ]
+            self.can_rotate=True
             
         elif id == 2:
             # 2 = L2
@@ -88,6 +89,7 @@ class Piece:
                 [2, 0],
                 [2, 2]
             ]
+            self.can_rotate=True
             
         elif id == 3:
             # 3 = L3
@@ -95,7 +97,7 @@ class Piece:
                 [3, 0],
                 [3, 3],
             ]
-            
+            self.can_rotate=False
         elif id == 4:
             # 4 = L4
             self.piece = [
@@ -103,7 +105,8 @@ class Piece:
                 [4, 0, 0],
                 [4, 4, 4]
             ]
-            
+
+            self.can_rotate=False
         elif id == 5:
             # 5 = U
             self.piece = [
@@ -111,6 +114,7 @@ class Piece:
                 [5, 0],
                 [5, 5]
             ]
+            self.can_rotate=False
             
         elif id == 6:
             # 6 = T
@@ -118,6 +122,7 @@ class Piece:
                 [6, 6, 6],
                 [0, 6, 0]
             ]
+            self.can_rotate=False
             
         elif id == 7:
             # 7 = Z
@@ -125,13 +130,14 @@ class Piece:
                 [7, 7, 0],
                 [0, 7, 7],
             ]
-            
+            self.can_rotate=True
         elif id == 8:
             # 8 = Z2
             self.piece = [
                 [8, 8, 8, 8],
                 [0, 8, 0, 0]
             ]
+            self.can_rotate=True
             
         elif id == 9:
             # 9 = truc
@@ -140,7 +146,7 @@ class Piece:
                 [9, 9, 9],
                 [0, 9, 0]
             ]
-            
+            self.can_rotate=True
         elif id == 10:
             # 10 = C
             self.piece = [
@@ -148,7 +154,7 @@ class Piece:
                 [10, 10],
                 [10, 10]
             ]
-            
+            self.can_rotate=True
 
         elif id == 11:
             # 11 = Z2
@@ -156,6 +162,7 @@ class Piece:
                 [11, 11, 11, 0],
                 [0, 0, 11, 11],
             ]
+            self.can_rotate=True
             
         elif id ==12:
             self.piece = [
@@ -163,6 +170,7 @@ class Piece:
                 [0,12,12],
                 [0,0,12]
             ]
+            self.can_rotate=False
     def __len__(self):
         return len(self.piece)
     def __getitem__(self, item):
