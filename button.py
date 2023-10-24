@@ -7,7 +7,7 @@ class Button:
                  callback,
                  *callbak_args,
                  bg_color = (0,0,0),
-                 text:str|None = None,
+                 text:str = None,
                  text_color = (255,255,255),
                  border_color = (255,255,255),
                  border_size:int = 1,
