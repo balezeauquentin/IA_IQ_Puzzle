@@ -95,14 +95,14 @@ def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)
 
                 for _ in range(4):
                     if current_piece[0][0] == 0:
+                        position=i,j
                         if debut:
-                            position =position[0], position[1] + len(current_piece) - 1
-                        else:
                             position =position[0], position[1] - len(current_piece) + 1
+                            debut=False
 
-                    if table.canPlaceShape(current_piece, (i, j)):
+                    if table.canPlaceShape(current_piece, position):
 
-                        temp_table.placeShape(current_piece, (i, j))
+                        temp_table.placeShape(current_piece, position)
                         next_position = (i, j + 1)
                         if next_position[1] == len(table[0]):
                             next_position = (i + 1, 0)
