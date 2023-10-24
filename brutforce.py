@@ -89,16 +89,17 @@ def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)
     for piece_id in range(1, 13):  # Mise à jour pour 12 pièces
         if used_pieces[piece_id - 1] == 0:
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
-            debut = True
+
             for _ in range(2):
                 current_piece.mirror()
 
                 for _ in range(4):
+                    position = i, j
                     if current_piece[0][0] == 0:
-                        position=i,j
-                        if debut:
-                            position =position[0], position[1] - len(current_piece) + 1
-                            debut=False
+
+                        position =position[0], position[1] - len(current_piece) + 1
+
+
 
                     if table.canPlaceShape(current_piece, position):
 
