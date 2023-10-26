@@ -53,14 +53,15 @@ def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)
     while a != position[0] or b != position[1]:
         if table[a][b] == 0:
             for idpiece in range(1, 13):
+                piece = jeu.Piece(idpiece)
                 for _ in range(2):
                     for _ in range(4):
-                        if table.canPlaceShape(jeu.Piece(idpiece), (a, b)):
-                            table.placeShape(jeu.Piece(idpiece), (a, b))
+                        if table.canPlaceShape(piece, (a, b)):
+                            table.placeShape(piece, (a, b))
                             used_pieces[idpiece - 1] = 1
                             return True
-                    jeu.Piece(idpiece).turnClockwise()
-                jeu.Piece(idpiece).mirror()
+                    piece.turnClockwise()
+                piece.mirror()
             return False
         b = b + 1
         if b == len(table[0]):
@@ -113,7 +114,7 @@ def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)
 
                         affichage.board.board = temp_table.board
                         brutforce(affichage, updated_used_pieces, temp_table, next_position)
-                        affichage.removeShape(piece_id)
+                        affichage.remove_shape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
 
