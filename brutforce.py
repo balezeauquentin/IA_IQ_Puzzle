@@ -91,9 +91,12 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
 
             for _ in range(2):
-                current_piece.mirror()
 
-                for _ in range(4):
+                if piece_id==7:
+                    m=2
+                else:
+                    m=4
+                for _ in range(m):
                     position = i, j
                     m = 0
                     while current_piece[0][m] == 0:
@@ -115,10 +118,13 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
                         affichage.removeShape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
-                    if current_piece.can_rotate:
-                        current_piece.turnClockwise()
-                    else:
-                        break
+                    current_piece.turnClockwise()
+                if current_piece.can_miror:
+                    current_piece.mirror()
+                else:
+                    break
+
+
 
 def launch_brutforce(a: interface.Interface):
     b = a.board
