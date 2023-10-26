@@ -28,7 +28,7 @@ def table_a_des_cases_isolees(plateau):
     return True
 
 
-def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)):
+def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
     affichage.draw()
 
     if 0 not in used_pieces:
@@ -92,15 +92,17 @@ def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
 
             for _ in range(2):
-                current_piece.mirror()
 
-                for _ in range(4):
+                if piece_id==7:
+                    m=2
+                else:
+                    m=4
+                for _ in range(m):
                     position = i, j
-                    if current_piece[0][0] == 0:
-
-                        position =position[0], position[1] - len(current_piece) + 1
-
-
+                    m = 0
+                    while current_piece[0][m] == 0:
+                        m = m + 1
+                    position = position[0], position[1] - m
 
                     if table.canPlaceShape(current_piece, position):
 
@@ -117,8 +119,12 @@ def brutforce(affichage:interface.Interface, used_pieces, table, position=(0, 0)
                         affichage.remove_shape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
+                    current_piece.turnClockwise()
+                if current_piece.can_miror:
+                    current_piece.mirror()
+                else:
+                    break
 
-                    current_piece.turnClockwise()  # Renomme la fonction pour éviter le conflit de noms
 
 
 def launch_brutforce(a: interface.Interface):
