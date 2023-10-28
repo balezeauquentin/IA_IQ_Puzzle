@@ -3,6 +3,9 @@ from button import Button
 import brutforce
 from jeu import *
 
+import threading
+import time
+
 # TODO:
 # Ameliorer les graphismes
 # Afficher un ecran de victoire
@@ -226,6 +229,13 @@ class Interface:
             self.held_shape.mirror()
         if keys[pg.K_p] and keys[pg.K_p] != self.previous_keys[pg.K_p]:
             brutforce.launch_brutforce(self)
+        if keys[pg.K_t] and keys[pg.K_t] != self.previous_keys[pg.K_t]:
+            # Probleme 1 : 
+            #   Pygame a pas l'air de kiffer le thread
+            #   Solution possible : faire en sorte que l'algo tourne sans l'interface et retourne les résultats pour ensuite les afficher
+            #   Peut etre faire quelque chose pour pouvoir choisir entre voir l'algo qui résoud en temps réel et juste voir les solutions
+            t = threading.Thread(target=self.launch_thread, args=(self.Colors.BLUE,), daemon=True)
+            t.start()
 
         for button in self.buttons:
             button.update()
@@ -294,6 +304,12 @@ class Interface:
         text_draw_rect = text_draw.get_rect()
         text_draw_rect.center = winRect.center
         self.screen.blit(text_draw, text_draw_rect)
+
+    def launch_thread(self, c):
+        print("Tesst")
+        time.sleep(2)
+        print("Tesst")
+        
 
 
 
