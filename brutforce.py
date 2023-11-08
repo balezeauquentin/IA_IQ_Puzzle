@@ -117,7 +117,7 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
                         # threade=threading.Thread(target=brutforce,args=(affichage,updated_used_pieces,temp_table,next_position))
                         brutforce(affichage, updated_used_pieces, temp_table, next_position)
                         # threade.run()
-                        affichage.remove_shape(piece_id)
+                        affichage.remove_shape(piece_id)        
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
                     current_piece.turnClockwise()
