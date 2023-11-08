@@ -29,7 +29,7 @@ def table_a_des_cases_isolees(plateau):
 
 
 def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
-    affichage.draw()
+    #affichage.draw()
 
     if 0 not in used_pieces:
         # Toutes les pièces ont été utilisées, nous avons une solution.
@@ -37,7 +37,7 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
         plateau_solution = jeu.Board(len(table), len(table[0]))
         plateau_solution.board = table
         plateau_solution.printBoard()
-        affichage.draw()
+
         return
     a = 0
     b = 0
@@ -93,10 +93,10 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
             for _ in range(2):
 
                 if piece_id == 7:
-                    m = 2
+                    t = 2
                 else:
-                    m = 4
-                for _ in range(m):
+                    t = 4
+                for _ in range(t):
                     position = i, j
                     m = 0
                     while current_piece[m][0] == 0:
@@ -117,7 +117,7 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
                         # threade=threading.Thread(target=brutforce,args=(affichage,updated_used_pieces,temp_table,next_position))
                         brutforce(affichage, updated_used_pieces, temp_table, next_position)
                         # threade.run()
-                        affichage.removeShape(piece_id)
+                        affichage.remove_shape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
                     current_piece.turnClockwise()
@@ -134,7 +134,12 @@ def launch_brutforce(a: interface.Interface):
         for val in ligne:
             if val != 0:
                 used_pieces[val - 1] = 1
-    brutforce(a, used_pieces, b)
+    petitpeton=threading.Thread(target=brutforce,args=(a, used_pieces, b))
+    petitpeton.daemon=True
+    petitpeton.start()
+
+
+    #brutforce(a, used_pieces, b)
 
 
 if __name__ == "__main__":
