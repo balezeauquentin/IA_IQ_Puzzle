@@ -1,5 +1,6 @@
 import jeu
 import interface
+import threading
 
 
 # def find_isoalte_celle(table: jeu.Board):
@@ -15,9 +16,8 @@ def case_isolee(plateau, ligne, colonne):
     # Vérifie si **toutes** les cases voisines sont différentes de zéro
     for voisin_ligne, voisin_colonne in voisins:
         if (
-                0 <= voisin_ligne < len(plateau) and  # Vérifie si les coordonnées sont dans les limites du plateau
-                0 <= voisin_colonne < len(plateau[0]) and
-                plateau[voisin_ligne][voisin_colonne] == 0
+                len(plateau) > voisin_ligne >= 0 == plateau[voisin_ligne][voisin_colonne] and  # Vérifie si les coordonnées sont dans les limites du plateau
+                0 <= voisin_colonne < len(plateau[0])
         ):
             return False  # Il y a au moins une case vide à proximité, la case n'est pas isolée
 
@@ -42,28 +42,28 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
     a = 0
     b = 0
     while a != len(table):
-        if table[a][b] == 0 and case_isolee(table, a, b):
+        if table[b][a] == 0 and case_isolee(table, b, a):
             return False
         b = b + 1
-        if b == len(table[0]):
+        if b == len(table):
             b = 0
             a = a + 1
     a = 0
     b = 0
-    while a != position[0] or b != position[1]:
-        if table[a][b] == 0:
+    while b != position[0] or a != position[1]:
+        if table[b][a] == 0:
             for idpiece in range(1, 13):
                 for _ in range(2):
                     for _ in range(4):
-                        if table.canPlaceShape(jeu.Piece(idpiece), (a, b)):
-                            table.placeShape(jeu.Piece(idpiece), (a, b))
+                        if table.canPlaceShape(jeu.Piece(idpiece), (b, a)):
+                            table.placeShape(jeu.Piece(idpiece), (b, a))
                             used_pieces[idpiece - 1] = 1
                             return True
                     jeu.Piece(idpiece).turnClockwise()
                 jeu.Piece(idpiece).mirror()
             return False
         b = b + 1
-        if b == len(table[0]):
+        if b == len(table):
             b = 0
             a = a + 1
 
@@ -72,14 +72,14 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
     while i < len(table):
         if table[i][j] != 0:
             # Cette case est déjà occupée, passons à la suivante.
-            next_position = (i, j + 1)
-            if next_position[1] == len(table[0]):
-                next_position = (i + 1, 0)
+            next_position = (i + 1, j)
+            if next_position[0] == len(table):
+                next_position = (0, j + 1)
             i, j = next_position
         else:
             break
 
-    if i == len(table):
+    if j == len(table[0]):
         # Toutes les cases ont été remplies, mais nous n'avons pas encore de solution.
         print("Pas de solution trouvée.")
         return
@@ -92,29 +92,31 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
 
             for _ in range(2):
 
-                if piece_id==7:
-                    m=2
+                if piece_id == 7:
+                    m = 2
                 else:
-                    m=4
+                    m = 4
                 for _ in range(m):
                     position = i, j
                     m = 0
-                    while current_piece[0][m] == 0:
+                    while current_piece[m][0] == 0:
                         m = m + 1
-                    position = position[0], position[1] - m
+                    position = position[0] - m, position[1]
 
                     if table.canPlaceShape(current_piece, position):
 
                         temp_table.placeShape(current_piece, position)
-                        next_position = (i, j + 1)
-                        if next_position[1] == len(table[0]):
-                            next_position = (i + 1, 0)
+                        next_position = (i + 1, j)
+                        if next_position[0] == len(table):
+                            next_position = (0, j + 1)
 
                         updated_used_pieces = used_pieces[:]
                         updated_used_pieces[piece_id - 1] = 1
 
                         affichage.board.board = temp_table.board
+                        # threade=threading.Thread(target=brutforce,args=(affichage,updated_used_pieces,temp_table,next_position))
                         brutforce(affichage, updated_used_pieces, temp_table, next_position)
+                        # threade.run()
                         affichage.removeShape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
@@ -123,7 +125,6 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
                     current_piece.mirror()
                 else:
                     break
-
 
 
 def launch_brutforce(a: interface.Interface):
