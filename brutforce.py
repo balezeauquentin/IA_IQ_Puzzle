@@ -127,6 +127,7 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
                     break
 
 
+
 def launch_brutforce(a: interface.Interface):
     b = a.board
     used_pieces = [0 for _ in range(12)]
@@ -137,6 +138,7 @@ def launch_brutforce(a: interface.Interface):
     petitpeton=threading.Thread(target=brutforce,args=(a, used_pieces, b))
     petitpeton.daemon=True
     petitpeton.start()
+    print("fin de recherche")
 
 
     #brutforce(a, used_pieces, b)
