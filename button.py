@@ -14,6 +14,7 @@ class Button:
                  font:str = "Verdana.ttf",
                  font_size:int = 24,
                  font_alliasing:bool = True):
+        
         self.size = size
         self.screen = screen
         self.bg_color = bg_color
