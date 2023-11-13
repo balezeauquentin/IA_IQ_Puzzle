@@ -10,7 +10,7 @@ from jeu import *
 class Interface:
 
     #Default size of a square from a shape
-    SQUARE_SIZE = 100
+    
     TITLE = "IQ Puzzler"
 
     # Couleurs (r,g,b)
@@ -108,6 +108,9 @@ class Interface:
         self.previous_keys = []
         self.pos_rectified = (0,0)
 
+        print(f'Screen size {pg.display.Info().current_w}x{pg.display.Info().current_h}')
+        self.square_size = pg.display.Info().current_w/11
+        self.fullscreen = False
         # By default select the first shape
         self.held_shape_id = 1
         self.held_shape = Piece(self.held_shape_id)
@@ -116,9 +119,9 @@ class Interface:
 
         # Creates the pygame window
         self.bkg_color = Interface.Colors.DARK_GREY
-        self.GRID_OFFSET = (0, int(self.SQUARE_SIZE))
-        self.WIN_WIDTH = width * self.SQUARE_SIZE
-        self.WIN_HEIGHT = height * self.SQUARE_SIZE  + self.GRID_OFFSET[1]
+        self.grid_offset = (0, int(self.square_size))
+        self.WIN_WIDTH = width * self.square_size
+        self.WIN_HEIGHT = height * self.square_size  + self.grid_offset[1]
         self.SCREEN = pg.display.set_mode((self.WIN_WIDTH , self.WIN_HEIGHT))
         pg.display.set_caption(self.TITLE)
 
@@ -126,10 +129,10 @@ class Interface:
         self.game_finished = False
 
         self.buttons:list[Button] = []
-        self.launch_bruteforce_but = Button((self.SQUARE_SIZE//2, self.SQUARE_SIZE//4), (self.SQUARE_SIZE,self.SQUARE_SIZE//2), self.SCREEN, brutforce.launch_brutforce, self, text="Bruteforce")
+        self.launch_bruteforce_but = Button((self.square_size//2, self.square_size//4), (self.square_size,self.square_size//2), self.SCREEN, brutforce.launch_brutforce, self, text="Bruteforce")
         self.buttons.append(self.launch_bruteforce_but)
         self.buttons.append(
-            Button((self.SQUARE_SIZE*2, self.SQUARE_SIZE//4), (self.SQUARE_SIZE,self.SQUARE_SIZE//2), self.SCREEN, self.quit, text="Quit", border_color=self.Colors.RED)
+            Button((self.square_size*2, self.square_size//4), (self.square_size,self.square_size//2), self.SCREEN, self.quit, text="Quit", border_color=self.Colors.RED)
         )
 
     def update_events(self) -> None:
@@ -166,11 +169,24 @@ class Interface:
             self.held_shape.mirror()
         if keys[pg.K_p] and keys[pg.K_p] != self.previous_keys[pg.K_p]:
             brutforce.launch_brutforce(self)
+        if keys[pg.K_F11] and keys[pg.K_F11] != self.previous_keys[pg.K_F11]:
+            self.fullscreen = not self.fullscreen
+            self.update_screen_mode()
 
         for button in self.buttons:
             button.update()
 
         self.previous_keys = keys
+
+    def update_screen_mode(self):
+        if self.fullscreen:
+            pg.display.set_mode((0,0), pg.FULLSCREEN)
+            self.square_size = pg.display.Info().current_w/11
+            self.grid_offset = (0, int(self.square_size + pg.display.Info().current_w % self.square_size))
+            print(self.grid_offset)
+
+        else:
+            pg.display.set_mode((self.WIN_WIDTH , self.WIN_HEIGHT))
 
     def draw(self) -> None:
         """
@@ -194,39 +210,39 @@ class Interface:
             for case in ligne:
                 if case != 0:
                     self.draw_square(case,x,y)
-                x += self.SQUARE_SIZE
+                x += self.square_size
             x = 0
-            y += self.SQUARE_SIZE
+            y += self.square_size
 
     def draw_grid(self) -> None:
-        off_x, off_y = self.GRID_OFFSET
+        off_x, off_y = self.grid_offset
         #Draws horizontal lines
         for y in range(len(self.board)):
-            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (off_x, y*self.SQUARE_SIZE + off_y), (self.WIN_WIDTH + off_x, y*self.SQUARE_SIZE + off_y))
+            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (off_x, y*self.square_size + off_y), (self.WIN_WIDTH + off_x, y*self.square_size + off_y))
 
         # Draws vertical lines
         for x in range(len(self.board[0])):
-            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (x * self.SQUARE_SIZE , off_y), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
+            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (x * self.square_size , off_y), (x * self.square_size, self.WIN_WIDTH))
 
     def draw_square(self, squareID:int, x:int, y:int) -> None:
-        square = pg.Rect(x + self.GRID_OFFSET[0], y + self.GRID_OFFSET[1], self.SQUARE_SIZE, self.SQUARE_SIZE)
+        square = pg.Rect(x + self.grid_offset[0], y + self.grid_offset[1], self.square_size, self.square_size)
         pg.draw.rect(self.SCREEN, Interface.Colors.getColorFromID2(squareID), square)
 
     def draw_preview(self) -> None:
         if not self.is_mouse_in_grid():
             return
         # Create a surface to enable alpha channel
-        sur = pg.Surface((self.SQUARE_SIZE, self.SQUARE_SIZE))
+        sur = pg.Surface((self.square_size, self.square_size))
         sur.set_alpha(64)
         for shapeX in range(len(self.held_shape.piece)):
             for shapeY in range(len(self.held_shape.piece[shapeX])):
                 if self.held_shape.piece[shapeX][shapeY] != 0 :
                     shape_color = Interface.Colors.getColorFromID2(self.held_shape_id)
-                    pg.draw.rect(sur, shape_color, pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
+                    pg.draw.rect(sur, shape_color, pg.Rect(0, 0, self.square_size, self.square_size))
                     self.SCREEN.blit(sur,
                                     (
-                                        (self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE + self.GRID_OFFSET[0],
-                                        (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE + self.GRID_OFFSET[1]
+                                        (self.pos_rectified[1]+shapeY) * self.square_size + self.grid_offset[0],
+                                        (self.pos_rectified[0]+shapeX) * self.square_size + self.grid_offset[1]
                                     )
                     )
 
@@ -236,7 +252,7 @@ class Interface:
         Transforms the mouse position into something that makes it easy to index into the grid
         """
         mouse_pos = pg.mouse.get_pos()
-        rectified = int((mouse_pos[1] - self.GRID_OFFSET[1])/ self.SQUARE_SIZE), int((mouse_pos[0] - self.GRID_OFFSET[0])/ self.SQUARE_SIZE)
+        rectified = int((mouse_pos[1] - self.grid_offset[1])/ self.square_size), int((mouse_pos[0] - self.grid_offset[0])/ self.square_size)
         return rectified
 
     def inc_shape_ID(self) -> None:
@@ -278,7 +294,7 @@ class Interface:
         self.isRunning = False
 
     def is_mouse_in_grid(self) -> bool:
-        grid_rect = pg.Rect(self.GRID_OFFSET, (self.WIN_WIDTH, self.WIN_HEIGHT))
+        grid_rect = pg.Rect(self.grid_offset, (self.WIN_WIDTH, self.WIN_HEIGHT))
         return grid_rect.collidepoint(self.mouse_pos)
     
     def draw_win_screen(self) -> None:

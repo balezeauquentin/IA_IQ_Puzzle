@@ -50,6 +50,8 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
         if b == len(table):
             b = 0
             a = a + 1
+        
+        
 
             #sert a rien mais doit normalement chercher si il y a une case vide avant la position rentrer dans la fonction n'arrive normalement jamais
     # a = 0
