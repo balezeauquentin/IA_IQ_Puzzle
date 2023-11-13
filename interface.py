@@ -199,13 +199,14 @@ class Interface:
             y += self.SQUARE_SIZE
 
     def draw_grid(self) -> None:
+        off_x, off_y = self.GRID_OFFSET
         #Draws horizontal lines
         for y in range(len(self.board)):
-            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (self.GRID_OFFSET[0], y*self.SQUARE_SIZE +self.GRID_OFFSET[1]), (self.WIN_WIDTH + self.GRID_OFFSET[0], y*self.SQUARE_SIZE + self.GRID_OFFSET[1]))
+            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (off_x, y*self.SQUARE_SIZE + off_y), (self.WIN_WIDTH + off_x, y*self.SQUARE_SIZE + off_y))
 
         # Draws vertical lines
         for x in range(len(self.board[0])):
-            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (x * self.SQUARE_SIZE , self.GRID_OFFSET[1]), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
+            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (x * self.SQUARE_SIZE , off_y), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
 
     def draw_square(self, squareID:int, x:int, y:int) -> None:
         square = pg.Rect(x + self.GRID_OFFSET[0], y + self.GRID_OFFSET[1], self.SQUARE_SIZE, self.SQUARE_SIZE)

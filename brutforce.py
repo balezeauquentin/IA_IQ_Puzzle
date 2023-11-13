@@ -42,8 +42,9 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
     a = 0
     b = 0
     while a != len(table):
-        if table[b][a] == 0 and case_isolee(table, b, a):
-            return False
+        if table[b][a] == 0:
+            if case_isolee(table, b, a):
+                return False
         b = b + 1
         if b == len(table):
             b = 0
@@ -138,12 +139,15 @@ def launch_brutforce(a: interface.Interface):
     petitpeton=threading.Thread(target=brutforce,args=(a, used_pieces, b))
     petitpeton.daemon=True
     petitpeton.start()
-    print("fin de recherche")
 
 
     #brutforce(a, used_pieces, b)
 
+def is_board_valid() -> bool:
+    #Regarder si il y a des trous non remplissables
+     pass
 
 if __name__ == "__main__":
     a = interface.Interface()
     brutforce(a, [0 for _ in range(12)], a.board)
+
