@@ -126,10 +126,10 @@ class Interface:
         self.game_finished = False
 
         self.buttons:list[Button] = []
-        self.launch_bruteforce_but = Button((self.SQUARE_SIZE//2, self.SQUARE_SIZE//4), (self.SQUARE_SIZE,self.SQUARE_SIZE//2), self.SCREEN, brutforce.launch_brutforce, self, text="Test")
+        self.launch_bruteforce_but = Button((self.SQUARE_SIZE//2, self.SQUARE_SIZE//4), (self.SQUARE_SIZE,self.SQUARE_SIZE//2), self.SCREEN, brutforce.launch_brutforce, self, text="Bruteforce")
         self.buttons.append(self.launch_bruteforce_but)
         self.buttons.append(
-            Button((self.SQUARE_SIZE*2, self.SQUARE_SIZE//4), (self.SQUARE_SIZE,self.SQUARE_SIZE//2), self.SCREEN, self.quit, text="quit", border_color=self.Colors.RED)
+            Button((self.SQUARE_SIZE*2, self.SQUARE_SIZE//4), (self.SQUARE_SIZE,self.SQUARE_SIZE//2), self.SCREEN, self.quit, text="Quit", border_color=self.Colors.RED)
         )
 
     def update_events(self) -> None:
@@ -214,7 +214,7 @@ class Interface:
     def draw_preview(self) -> None:
         if not self.is_mouse_in_grid():
             return
-        # Create a surface to enable alpha channe²
+        # Create a surface to enable alpha channel
         sur = pg.Surface((self.SQUARE_SIZE, self.SQUARE_SIZE))
         sur.set_alpha(64)
         for shapeX in range(len(self.held_shape.piece)):
