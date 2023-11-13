@@ -1,2 +1,6 @@
 __pycache__/
 .idea/
+*.pyc
+__pycache__/brutforce.cpython-39.pyc
+__pycache__/interface.cpython-39.pyc
+__pycache__/jeu.cpython-39.pyc
