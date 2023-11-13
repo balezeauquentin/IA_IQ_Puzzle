@@ -184,6 +184,7 @@ class Interface:
     def update_screen_mode(self):
         if self.fullscreen:
             pg.display.set_mode((0, 0), pg.FULLSCREEN)
+            self.WIN_HEIGHT=pg.display.Info().current_h
             self.square_size = pg.display.Info().current_w / 11
             self.grid_offset = (0, int(self.square_size + pg.display.Info().current_w % self.square_size))
             print(self.grid_offset)
@@ -222,6 +223,7 @@ class Interface:
         # self.square_size = pg.display.Info().current_w / 11
         # self.WIN_WIDTH = self.board.width * self.square_size
         # self.WIN_HEIGHT = (self.board.height + 1) * self.square_size
+        print(self.WIN_WIDTH, self.WIN_HEIGHT,pg.display.Info().current_h)
 
 
         # Draws horizontal lines
