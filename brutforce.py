@@ -15,11 +15,15 @@ def case_isolee(plateau, ligne, colonne):
 
     # Vérifie si **toutes** les cases voisines sont différentes de zéro
     for voisin_ligne, voisin_colonne in voisins:
-        if (
-                len(plateau) > voisin_ligne >= 0 == plateau[voisin_ligne][voisin_colonne] and  # Vérifie si les coordonnées sont dans les limites du plateau
-                0 <= voisin_colonne < len(plateau[0])
-        ):
-            return False  # Il y a au moins une case vide à proximité, la case n'est pas isolée
+        # if (
+        #         len(plateau) > voisin_ligne >= 0 == plateau[voisin_ligne][voisin_colonne] and  # Vérifie si les coordonnées sont dans les limites du plateau
+        #         0 <= voisin_colonne < len(plateau[0])
+        # ):
+        #     return False
+        if len(plateau) > voisin_ligne >= 0 and 0 <= voisin_colonne < len(plateau[0]):
+            if plateau[voisin_ligne][voisin_colonne]==0:
+                return False
+              # Il y a au moins une case vide à proximité, la case n'est pas isolée
 
     return True  # Toutes les cases voisines sont différentes de zéro, la case est isolée
 
@@ -40,15 +44,11 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
         return
 
     #on verifie si il y a pas une case isolé presente sur le tableau
-    a = 0
-    b = 0
-    while a != len(table):
-        if table[b][a] == 0 and case_isolee(table, b, a):
-            return False
-        b = b + 1
-        if b == len(table):
-            b = 0
-            a = a + 1
+    for ligne in range(len(table)):
+        for colone in range(len(table[0])):
+            if table[ligne][colone]==0:
+                if case_isolee(table,ligne,colone):
+                    return False
 
             #sert a rien mais doit normalement chercher si il y a une case vide avant la position rentrer dans la fonction n'arrive normalement jamais
     # a = 0
