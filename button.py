@@ -1,11 +1,12 @@
 import pygame as pg
 
 class Button:
+
+    CENTERED = -1
+
     def __init__(self, pos:tuple[int,int],
                  size:tuple[int,int],
                  screen:pg.Surface,
-                 callback,
-                 *callbak_args,
                  bg_color = (0,0,0),
                  text:str = None,
                  text_color = (255,255,255),
@@ -13,7 +14,9 @@ class Button:
                  border_size:int = 1,
                  font:str = "Verdana.ttf",
                  font_size:int = 24,
-                 font_alliasing:bool = True):
+                 font_alliasing:bool = True,
+                 callback = None,
+                 callbak_args = ()):
         
         self.size = size
         self.screen = screen
@@ -24,9 +27,9 @@ class Button:
         self.border_size = border_size
         self.callback = callback
 
-        if (pos[0] == -1):
+        if (pos[0] == self.CENTERED):
             pos = (self.screen.get_width()//2-size[0]//2, pos[1])
-        if (pos[1] == -1):
+        if (pos[1] == self.CENTERED):
             pos = (pos[0], self.screen.get_height()//2-size[1]/2)
 
         self.rect = pg.Rect(pos, size)
@@ -66,5 +69,9 @@ class Button:
         return self.rect.collidepoint(pg.mouse.get_pos())
 
     def onClick(self) -> None:
-        self.callback(*self.callback_args)
-        self.prev_state = True
+        if self.callback != None:
+            self.callback(*self.callback_args)
+            self.prev_state = True
+
+    def changePos(self, pos:tuple[int, int]):
+        self.pos = pos
