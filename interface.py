@@ -128,14 +128,17 @@ class Interface:
         self.isRunning = True
         self.game_finished = False
 
+        self.button_font_size = 24
+
         self.buttons: list[Button] = []
         self.launch_bruteforce_but = Button((self.square_size // 2, self.square_size // 4),
                                             (self.square_size, self.square_size // 2), self.SCREEN,
-                                            brutforce.launch_brutforce, self, text="Bruteforce")
+                                            brutforce.launch_brutforce, self, text="Bruteforce",
+                                            font_size=self.button_font_size)
         self.buttons.append(self.launch_bruteforce_but)
         self.buttons.append(
             Button((self.square_size * 2, self.square_size // 4), (self.square_size, self.square_size // 2),
-                   self.SCREEN, self.quit, text="Quit", border_color=self.Colors.RED)
+                   self.SCREEN, self.quit, text="Quit", border_color=self.Colors.RED, font_size=self.button_font_size)
         )
 
     def update_events(self) -> None:
@@ -145,7 +148,7 @@ class Interface:
 
         self.mouse_pos = pg.mouse.get_pos()
         self.pos_rectified = self.rectify_mouse_position()
-        keys = pg.key.get_pressed()
+        self.keys = pg.key.get_pressed()
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.isRunning = False
@@ -160,33 +163,35 @@ class Interface:
                     id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
                     self.remove_shape(id)
 
-        if keys[pg.K_ESCAPE]:
+        if self.key_pressed(pg.K_ESCAPE):
             self.quit()
-        if keys[pg.K_LEFT] and keys[pg.K_LEFT] != self.previous_keys[pg.K_LEFT]:
+        if self.key_pressed(pg.K_LEFT):
             self.inc_shape_ID()
-        if keys[pg.K_RIGHT] and keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
+        if self.key_pressed(pg.K_RIGHT):
             self.dec_shape_ID()
-        if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
+        if self.key_pressed(pg.K_r):
             self.held_shape.turnClockwise()
-        if keys[pg.K_e] and keys[pg.K_e] != self.previous_keys[pg.K_e]:
+        if self.key_pressed(pg.K_e):
             self.held_shape.mirror()
-        if keys[pg.K_p] and keys[pg.K_p] != self.previous_keys[pg.K_p]:
+        if self.key_pressed(pg.K_p):
             brutforce.launch_brutforce(self)
-        if keys[pg.K_F11] and keys[pg.K_F11] != self.previous_keys[pg.K_F11]:
+        if self.key_pressed(pg.K_F11):
             self.fullscreen = not self.fullscreen
             self.update_screen_mode()
 
         for button in self.buttons:
             button.update()
 
-        self.previous_keys = keys
+        self.previous_keys = self.keys
+
+    def key_pressed(self, key: int):
+        return self.keys[key] and self.keys[key] != self.previous_keys[key]
 
     def update_screen_mode(self):
         if self.fullscreen:
             pg.display.set_mode((0, 0), pg.FULLSCREEN)
             self.square_size = pg.display.Info().current_w / 11
             self.grid_offset = (0, int(self.square_size + pg.display.Info().current_w % self.square_size))
-            print(self.grid_offset)
 
         else:
             pg.display.set_mode((self.WIN_WIDTH, self.WIN_HEIGHT))
@@ -204,6 +209,7 @@ class Interface:
 
         if self.game_finished:
             self.draw_win_screen()
+
         pg.display.flip()
         pg.display.update()
 
