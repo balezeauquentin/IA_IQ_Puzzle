@@ -190,7 +190,10 @@ class Interface:
             print(self.grid_offset)
 
         else:
+            self.WIN_HEIGHT = (self.board.height + 1) * self.square_size
             pg.display.set_mode((self.WIN_WIDTH, self.WIN_HEIGHT))
+
+
 
     def draw(self) -> None:
         """
