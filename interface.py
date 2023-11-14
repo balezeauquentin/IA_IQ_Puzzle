@@ -10,7 +10,6 @@ from jeu import *
 # Resize les boutons
 # Ajouter un compteur de solutions
 # Ajouter une taille minimum a la fenetre
-# Fix les problemes
 
 
 
@@ -22,7 +21,6 @@ class Interface:
     DEFAULT_HEIGHT = 900
 
 
-    
 
     # Couleurs (r,g,b)
     class Colors:
@@ -144,21 +142,21 @@ class Interface:
         # The buttons for each state of the interface
         self.MENUS = {
             "Main": [
-                Button((Button.CENTERED, self.DEFAULT_HEIGHT // 3 - self.square_size), (self.square_size*2, self.square_size), self.SCREEN,
+                Button((Button.CENTERED, 1/3), (self.square_size*2, self.square_size), self.SCREEN,
                        callback=self.launch, text="Start",
                        font_size=self.button_font_size, border_size=4),
 
-                Button((Button.CENTERED, self.DEFAULT_HEIGHT // 3 * 2), (self.square_size*2, self.square_size), self.SCREEN,
+                Button((Button.CENTERED, 2/3), (self.square_size*2, self.square_size), self.SCREEN,
                        callback=self.quit, text="Exit",
                        font_size=self.button_font_size, border_size=4)
             ],
             "Running": [
-                    Button((self.square_size // 2, self.square_size // 4),
+                    Button((0.1, 0.1),
                             (self.square_size, self.square_size // 2), self.SCREEN,
                             callback=brutforce.launch_brutforce, callbak_args=(self,), text="Launch",
                             font_size=self.button_font_size, border_size=4,border_color=self.Colors.GREEN),
 
-                    Button((self.square_size * 2, self.square_size // 4), (self.square_size, self.square_size // 2),
+                    Button((0.2, 0.1), (self.square_size, self.square_size // 2),
                             self.SCREEN, callback=self.back_to_main, text="Quit", border_color=self.Colors.RED,
                             font_size=self.button_font_size, border_size=4)
             ]
@@ -222,7 +220,7 @@ class Interface:
                 brutforce.launch_brutforce(self)
 
         for but in self.MENUS[self.current_mode]:
-            but.update(self.SCREEN)
+            but.update()
 
         self.previous_keys = self.keys
 
