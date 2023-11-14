@@ -13,6 +13,8 @@ from jeu import *
 
 class Interface:
     TITLE = "IQ Puzzler"
+    MIN_WIDTH = 640
+    MIN_HEIGHT = MIN_WIDTH // 11 * 6
 
     
 
@@ -121,29 +123,30 @@ class Interface:
         self.grid_offset = (0, int(self.square_size))
         self.win_width = width * self.square_size
         self.win_height = height * self.square_size + self.grid_offset[1]
-        self.SCREEN = pg.display.set_mode((self.win_width, self.win_height))
+        self.SCREEN = pg.display.set_mode((self.win_width, self.win_height), pg.RESIZABLE)
         pg.display.set_caption(self.TITLE)
 
         self.isRunning = True
         self.game_finished = False
 
         self.current_mode = "Main"
-
         self.button_font_size = 18 + self.square_size//4
 
+        # The buttons for each state of the interface
         self.MENUS = {
             "Main": [
                 Button((Button.CENTERED, self.win_height // 3 - self.square_size), (self.square_size*2, self.square_size), self.SCREEN,
-                       bg_color=self.Colors.BLACK, callback=self.launch, text="Start",
+                       callback=self.launch, text="Start",
                        font_size=self.button_font_size, border_size=4),
+
                 Button((Button.CENTERED, self.win_height // 3 * 2), (self.square_size*2, self.square_size), self.SCREEN,
-                       bg_color=self.Colors.BLACK, callback=self.quit, text="Exit",
+                       callback=self.quit, text="Exit",
                        font_size=self.button_font_size, border_size=4)
             ],
             "Running": [
                     Button((self.square_size // 2, self.square_size // 4),
                             (self.square_size, self.square_size // 2), self.SCREEN,
-                            callback=brutforce.launch_brutforce, callbak_args=(self), text="Launch",
+                            callback=brutforce.launch_brutforce, callbak_args=(self,), text="Launch",
                             font_size=self.button_font_size, border_size=4,border_color=self.Colors.GREEN),
 
                     Button((self.square_size * 2, self.square_size // 4), (self.square_size, self.square_size // 2),
@@ -174,8 +177,20 @@ class Interface:
                         id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
                         self.remove_shape(id)
 
+            if event.type == pg.VIDEORESIZE:
+                temp_info = pg.display.Info()
+                self.win_width = max(temp_info.current_w, self.MIN_WIDTH)
+                self.win_height =  max(temp_info.current_h, self.MIN_HEIGHT)
+                self.square_size = self.win_width//self.board.width
+                self.grid_offset = (self.win_width - self.square_size*11,
+                                    self.win_height - self.square_size*5)
+                print(f"Resized : {pg.display.Info().current_w}x{pg.display.Info().current_h}, offset : {self.grid_offset}")
+
         if self.key_pressed(pg.K_ESCAPE):
             self.quit()
+        if self.key_pressed(pg.K_F11):
+            self.fullscreen = not self.fullscreen
+            self.update_screen_mode()
 
         if self.current_mode == "Running":
             if self.key_pressed(pg.K_LEFT):
@@ -188,12 +203,9 @@ class Interface:
                 self.held_shape.mirror()
             if self.key_pressed(pg.K_p):
                 brutforce.launch_brutforce(self)
-            if self.key_pressed(pg.K_F11):
-                self.fullscreen = not self.fullscreen
-                self.update_screen_mode()
 
         for but in self.MENUS[self.current_mode]:
-            but.update()
+            but.update(self.SCREEN)
 
         self.previous_keys = self.keys
 
@@ -212,7 +224,7 @@ class Interface:
                                 self.grid_offset[1] - self.win_height + self.square_size*6)
             self.win_height = self.square_size * self.board.height + self.grid_offset[1]
             self.win_width = self.square_size * self.board.width + self.grid_offset[0]
-            pg.display.set_mode((self.win_width, self.win_height))
+            pg.display.set_mode((self.win_width, self.win_height), pg.RESIZABLE)
 
     def draw(self) -> None:
         """
@@ -244,18 +256,18 @@ class Interface:
             y += self.square_size
 
     def draw_grid(self) -> None:
-        off_x, _ = self.grid_offset
-
+        off_x, off_y = self.grid_offset
+        off_y = off_y - self.square_size
         # Draws horizontal lines
         for y in range(len(self.board) + 1):
-            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (off_x//2, self.win_height - y * self.square_size),
-                         (self.win_width - off_x//2, self.win_height - y * self.square_size))
+            pg.draw.line(self.SCREEN, Interface.Colors.BLACK, (off_x//2, self.win_height - y * self.square_size - (off_y //2)),
+                         (self.win_width - off_x//2, self.win_height - y * self.square_size - (off_y//2)))
 
         # Draws vertical lines
         for x in range(len(self.board[0]) + 1):
             pg.draw.line(self.SCREEN, Interface.Colors.BLACK,
-                         (x * self.square_size + off_x//2, self.win_height - self.board.height * self.square_size),
-                         (x * self.square_size + off_x//2, self.win_height))
+                         (x * self.square_size + off_x//2, self.win_height - self.board.height * self.square_size - (off_y //2)),
+                         (x * self.square_size + off_x//2, self.win_height - (off_y //2)))
 
     def draw_square(self, squareID: int, x: int, y: int) -> None:
         square = pg.Rect(x + self.grid_offset[0] // 2, y + self.grid_offset[1], self.square_size, self.square_size)
@@ -323,13 +335,13 @@ class Interface:
                     if self.board[x][y] == id:
                         self.board[x][y] = 0
 
-    def back_to_main(self):
+    def back_to_main(self) -> None:
         self.current_mode = "Main"
 
-    def launch(self):
+    def launch(self) -> None:
         self.current_mode = "Running"
 
-    def quit(self):
+    def quit(self) -> None:
         self.isRunning = False
 
     def is_mouse_in_grid(self) -> bool:

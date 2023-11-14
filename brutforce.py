@@ -3,12 +3,6 @@ import interface
 import threading
 
 
-# def find_isoalte_celle(table: jeu.Board):
-#     for i in range(len(table.board)):
-#         for j in range(len(table.board[0])):
-#             if table.board[i][j]==0:
-#                 if i==0 or table.board[i-1][j]!=0 and i==
-#
 def case_isolee(plateau, ligne, colonne):
     # Les coordonnées des cases voisines
     voisins = [(ligne - 1, colonne), (ligne + 1, colonne), (ligne, colonne - 1), (ligne, colonne + 1)]
@@ -33,7 +27,6 @@ def table_a_des_cases_isolees(plateau):
 
 
 def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
-    #affichage.draw()
     # quand une solution est trouver
     if 0 not in used_pieces:
         # Toutes les pièces ont été utilisées, nous avons une solution.
@@ -136,8 +129,8 @@ def launch_brutforce(a: interface.Interface):
         for val in ligne:
             if val != 0:
                 used_pieces[val - 1] = 1
-    petitpeton=threading.Thread(target=brutforce,args=(a, used_pieces, b))
-    petitpeton.daemon=True
+    petitpeton = threading.Thread(target=brutforce,args=(a, used_pieces, b))
+    petitpeton.daemon = True
     petitpeton.start()
     print("fin de recherche")
 

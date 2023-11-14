@@ -60,7 +60,8 @@ class Button:
             text_draw_rect.center = self.rect.center
             self.surface.blit(text_draw, text_draw_rect)
     
-    def update(self) -> None:
+    def update(self, surface) -> None:
+        
         if (pg.mouse.get_pressed()[0] and self.isHovered() and not self.prev_state):
             self.onClick()
         self.prev_state = pg.mouse.get_pressed()[0]
