@@ -60,8 +60,8 @@ class Board:
     
     def isFinished(self):
         for line in self:
-            for case in line:
-                if case == 0:
+            for cell in line:
+                if cell == 0:
                     return False
         return True
 

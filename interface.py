@@ -1,23 +1,26 @@
 import pygame as pg
-from button import Button
+import threading
 import brutforce
+from button import Button
 from jeu import *
 
-import threading
-import time
 
 # TODO:
 # Ameliorer les graphismes
+# Resize les boutons
+# Ajouter un compteur de solutions
+# Ajouter une taille minimum a la fenetre
+
+
+
 
 
 class Interface:
-    """
-    Get ready to see a lot of ugly and boring code !
-    """
-
-    #Default size of a square from a shape
-    SQUARE_SIZE = 100
     TITLE = "IQ Puzzler"
+    DEFAULT_WIDTH = 1600
+    DEFAULT_HEIGHT = 900
+
+
 
     # Couleurs (r,g,b)
     class Colors:
@@ -34,14 +37,14 @@ class Interface:
         GREY = (128, 128, 128)
         BLACK = (0, 0, 0)
         LIME_GREEN = (150, 255, 50)
-        WHITE = (255, 255 ,255) 
+        WHITE = (255, 255, 255)
         LIGHT_BLUE = (150, 225, 255)
         BLUE = (100, 100, 255)
-        TURQUOIZE = (0 ,125, 125)
+        TURQUOIZE = (0, 125, 125)
         DARK_RED = (150, 0, 50)
-        DARK_GREY = (64,64,64)
-        
-        def getColorFromID(id:int):
+        DARK_GREY = (64, 64, 64)
+
+        def getColorFromID(id: int):
             """
             Returns a color given the ID of a shape
             """
@@ -73,8 +76,8 @@ class Interface:
                 color = None
 
             return color
-        
-        def getColorFromID2(id:int):
+
+        def getColorFromID2(id: int):
             """
             Returns a color given the ID of a shape
             """
@@ -107,62 +110,98 @@ class Interface:
 
             return color
 
-
-    def __init__(self, height:int = 5, width:int = 11) -> None:
-    
+    def __init__(self, height: int = 5, width: int = 11) -> None:
         # Used to make sure when a key is held down that we only press it once
         self.previous_keys = []
-        self.pos_rectified = (0,0)
+        self.pos_rectified = (0, 0)
+        self.fullscreen = False
 
         # By default select the first shape
         self.held_shape_id = 1
         self.held_shape = Piece(self.held_shape_id)
-
         self.board = Board(height, width)
 
         # Creates the pygame window
         self.bkg_color = Interface.Colors.DARK_GREY
-        self.GRID_OFFSET = (0, int(self.SQUARE_SIZE))
-        self.WIN_WIDTH = width * self.SQUARE_SIZE
-        self.WIN_HEIGHT = height * self.SQUARE_SIZE  + self.GRID_OFFSET[1]
-        self.screen = pg.display.set_mode((self.WIN_WIDTH , self.WIN_HEIGHT))
+        self.SCREEN = pg.display.set_mode((self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT), pg.RESIZABLE)
+        self.previous_h = 0
+        self.previous_w = 0
+
+        # Defines the variables using the window size
+        self.calculate_square_size()
+        self.top_space = self.square_size
+        self.calculate_offset()
         pg.display.set_caption(self.TITLE)
 
         self.isRunning = True
         self.game_finished = False
 
-        self.buttons:list[Button] = []
-        self.launch_bruteforce_but = Button((self.SQUARE_SIZE/2, self.SQUARE_SIZE/4), (self.SQUARE_SIZE,self.SQUARE_SIZE/2), self.screen, brutforce.launch_brutforce, self, text="Test")
-        self.buttons.append(self.launch_bruteforce_but)
-        self.buttons.append(
-            Button((self.SQUARE_SIZE*2, self.SQUARE_SIZE/4), (self.SQUARE_SIZE,self.SQUARE_SIZE/2), self.screen, self.quit, text="quit", border_color=self.Colors.RED)
-        )
+        self.current_mode = "Main"
+        self.button_font_size = 18 + self.square_size//4
+
+        # The buttons for each state of the interface
+        self.MENUS = {
+            "Main": [
+                Button((Button.CENTERED, 1/3), (self.square_size*2, self.square_size), self.SCREEN,
+                       callback=self.launch, text="Start",
+                       font_size=self.button_font_size, border_size=4),
+
+                Button((Button.CENTERED, 2/3), (self.square_size*2, self.square_size), self.SCREEN,
+                       callback=self.quit, text="Exit",
+                       font_size=self.button_font_size, border_size=4)
+            ],
+            "Running": [
+                    Button((0.1, 0.1),
+                            (self.square_size, self.square_size // 2), self.SCREEN,
+                            callback=brutforce.launch_brutforce, callbak_args=(self,), text="Launch",
+                            font_size=self.button_font_size, border_size=4,border_color=self.Colors.GREEN),
+
+                    Button((0.2, 0.1), (self.square_size, self.square_size // 2),
+                            self.SCREEN, callback=self.back_to_main, text="Quit", border_color=self.Colors.RED,
+                            font_size=self.button_font_size, border_size=4)
+            ]
+        }
+
+    def calculate_offset(self) -> None:
+        self.grid_offset = (self.SCREEN.get_width() - self.square_size * self.board.width,
+                       self.SCREEN.get_height() - self.square_size * self.board.height - self.top_space)
+
+    def calculate_square_size(self) -> None:
+        self.square_size = self.SCREEN.get_width() // self.board.width
+
+    def can_place_shape(self) -> bool:
+        return self.board.canPlaceShape(self.held_shape, (self.pos_rectified[1], self.pos_rectified[0]))
+
+    def place_shape(self) -> None:
+        self.board.placeShape(self.held_shape, (self.pos_rectified[1], self.pos_rectified[0]))
 
     def update_events(self) -> None:
         """
         Call events() before draw()
         """
-        if self.game_finished:
-            return
-
         self.mouse_pos = pg.mouse.get_pos()
-        self.pos_rectified =  self.rectify_mouse_position()
-        keys = pg.key.get_pressed()
-        for event in pg.event.get():        
-            if event.type == pg.QUIT: 
+        self.pos_rectified = self.rectify_mouse_position()
+        self.keys = pg.key.get_pressed()
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 self.isRunning = False
             if event.type == pg.MOUSEBUTTONDOWN:
-                if event.button == pg.BUTTON_LEFT and self.isMouseInGrid():
-                    if self.board.canPlaceShape(self.held_shape, self.pos_rectified):
-                        self.board.placeShape(self.held_shape, self.pos_rectified)
-                        self.inc_shape_ID()
-                        if self.board.isFinished():
-                            self.game_finished = True
-                if event.button == pg.BUTTON_RIGHT:
-                    id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
-                    self.remove_shape(id)
+                if self.current_mode == "Running":
+                    if event.button == pg.BUTTON_LEFT and self.is_mouse_in_grid():
+                        if self.can_place_shape():
+                            self.place_shape()
+                            self.inc_shape_ID()
+                            if self.board.isFinished():
+                                self.game_finished = True
+                    if event.button == pg.BUTTON_RIGHT:
+                        id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
+                        self.remove_shape(id)
 
-        if keys[pg.K_ESCAPE]:
+            if event.type == pg.VIDEORESIZE:
+                self.calculate_square_size()
+                self.calculate_offset()
+
+        if self.key_pressed(pg.K_ESCAPE):
             self.quit()
         if keys[pg.K_LEFT] and keys[pg.K_LEFT] != self.previous_keys[pg.K_LEFT]:
             self.inc_shape_ID()
@@ -174,82 +213,102 @@ class Interface:
             self.held_shape.mirror()
         if keys[pg.K_p] and keys[pg.K_p] != self.previous_keys[pg.K_p]:
             brutforce.launch_brutforce(self)
-        if keys[pg.K_t] and keys[pg.K_t] != self.previous_keys[pg.K_t]:
-            # Probleme 1 : 
-            #   Pygame a pas l'air de kiffer le thread
-            #   Solution possible : faire en sorte que l'algo tourne sans l'interface et retourne les résultats pour ensuite les afficher
-            #   Peut etre faire quelque chose pour pouvoir choisir entre voir l'algo qui résoud en temps réel et juste voir les solutions
-            t = threading.Thread(target=self.launch_thread, args=(self.Colors.BLUE,), daemon=True)
-            t.start()
 
-        for button in self.buttons:
-            button.update()
+        for but in self.MENUS[self.current_mode]:
+            but.update()
 
-        self.previous_keys = keys
+        self.previous_keys = self.keys
+
+    def key_pressed(self, key: int):
+        return self.keys[key] and self.keys[key] != self.previous_keys[key]
+
+    def update_screen_mode(self):
+        if self.fullscreen:
+            self.previous_h = self.SCREEN.get_height()
+            self.previous_w = self.SCREEN.get_width()
+            pg.display.set_mode((0, 0), pg.FULLSCREEN)
+
+        else:
+            pg.display.set_mode((self.previous_w, self.previous_h), pg.RESIZABLE)
+
+        self.calculate_square_size()
+        self.calculate_offset()
 
     def draw(self) -> None:
         """
         Called once every frame
         """
-        self.screen.fill(self.bkg_color)
-        self.draw_shapes()
-        self.draw_preview()
-        self.draw_grid()
-        for but in self.buttons:
+        self.SCREEN.fill(self.bkg_color)
+        if self.current_mode == "Running":
+            self.draw_shapes()
+            self.draw_preview()
+            self.draw_grid()
+
+            if self.game_finished:
+                self.draw_win_screen()
+        
+        for but in self.MENUS[self.current_mode]:
             but.draw()
 
-        if self.game_finished:
-            self.drawWinScreen()
-        pg.display.flip() 
+        pg.display.flip()
         pg.display.update()
 
     def draw_shapes(self) -> None:
-        x,y = 0,0
+        x, y = 0, 0
         for ligne in self.board:
             for case in ligne:
                 if case != 0:
-                    self.draw_square(case,x,y)
-                x += self.SQUARE_SIZE
+                    self.draw_square(case, x, y)
+                x += self.square_size
             x = 0
-            y += self.SQUARE_SIZE
+            y += self.square_size
 
     def draw_grid(self) -> None:
-        #Draws horizontal lines
-        for y in range(len(self.board)):
-            pg.draw.line(self.screen, Interface.Colors.BLACK, (self.GRID_OFFSET[0], y*self.SQUARE_SIZE +self.GRID_OFFSET[1]), (self.WIN_WIDTH + self.GRID_OFFSET[0], y*self.SQUARE_SIZE + self.GRID_OFFSET[1]))
+        off_x, off_y = self.grid_offset
+        # Draws horizontal lines
+        for y in range(len(self.board) + 1):
+            pg.draw.line(self.SCREEN, Interface.Colors.BLACK,
+                         (off_x//2, y * self.square_size + self.top_space + off_y//2),
+                         (self.square_size * self.board.width + off_x//2, y * self.square_size + self.top_space + off_y//2)
+            )
 
         # Draws vertical lines
-        for x in range(len(self.board[0])):
-            pg.draw.line(self.screen, Interface.Colors.BLACK, (x * self.SQUARE_SIZE , self.GRID_OFFSET[1]), (x * self.SQUARE_SIZE, self.WIN_WIDTH))
+        for x in range(len(self.board[0]) + 1):
+            pg.draw.line(self.SCREEN, Interface.Colors.BLACK,
+                         (x * self.square_size + off_x//2, self.top_space + off_y//2),
+                         (x * self.square_size + off_x//2, self.board.height * self.square_size + self.top_space + off_y//2)
+            )
 
-    def draw_square(self, squareID:int, x:int, y:int) -> None:
-        square = pg.Rect(x + self.GRID_OFFSET[0], y + self.GRID_OFFSET[1], self.SQUARE_SIZE, self.SQUARE_SIZE)
-        pg.draw.rect(self.screen, Interface.Colors.getColorFromID2(squareID), square)
+    def draw_square(self, squareID: int, x: int, y: int) -> None:
+        square = pg.Rect(x + self.grid_offset[0] // 2, y + self.grid_offset[1]//2 + self.top_space, self.square_size, self.square_size)
+        pg.draw.rect(self.SCREEN, Interface.Colors.getColorFromID2(squareID), square)
 
     def draw_preview(self) -> None:
-        if not self.isMouseInGrid():
+        if not self.can_place_shape():
             return
-        # Create a surface to enable alpha channe²
-        sur = pg.Surface((self.SQUARE_SIZE, self.SQUARE_SIZE))
+        
+        # Create a surface to enable alpha channel
+        sur = pg.Surface((self.square_size, self.square_size))
         sur.set_alpha(64)
-        for shapeX in range(len(self.held_shape.piece)):
-            for shapeY in range(len(self.held_shape.piece[shapeX])):
-                if self.held_shape.piece[shapeX][shapeY] != 0 :
+        for shapeY in range(len(self.held_shape.piece)):
+            for shapeX in range(len(self.held_shape.piece[shapeY])):
+                if self.held_shape.piece[shapeY][shapeX] != 0:
                     shape_color = Interface.Colors.getColorFromID2(self.held_shape_id)
-                    pg.draw.rect(sur, shape_color,pg.Rect(0, 0, self.SQUARE_SIZE, self.SQUARE_SIZE))
-                    self.screen.blit(sur, (
-                                            (self.pos_rectified[1]+shapeY) * self.SQUARE_SIZE + self.GRID_OFFSET[0],
-                                            (self.pos_rectified[0]+shapeX) * self.SQUARE_SIZE + self.GRID_OFFSET[1]
-                                        )
+                    pg.draw.rect(sur, shape_color, pg.Rect(0, 0, self.square_size, self.square_size))
+                    self.SCREEN.blit(sur,
+                                    (
+                                        (self.pos_rectified[0] + shapeX) * self.square_size + self.grid_offset[0]//2,
+                                        (self.pos_rectified[1] + shapeY) * self.square_size + self.top_space + self.grid_offset[1]//2
+                                    )
                     )
 
-
-    def rectify_mouse_position(self) -> tuple[int,int]:
+    def rectify_mouse_position(self) -> tuple[int, int]:
         """
         Transforms the mouse position into something that makes it easy to index into the grid
         """
         mouse_pos = pg.mouse.get_pos()
-        rectified = int((mouse_pos[1] - self.GRID_OFFSET[1])/ self.SQUARE_SIZE), int((mouse_pos[0] - self.GRID_OFFSET[0])/ self.SQUARE_SIZE)
+        rectified = ((mouse_pos[0] - self.grid_offset[0]//2) // self.square_size,
+                    (mouse_pos[1] - self.grid_offset[1]//2 - self.top_space) // self.square_size)
         return rectified
 
     def inc_shape_ID(self) -> None:
@@ -257,7 +316,7 @@ class Interface:
             self.held_shape_id += 1
         else:
             self.held_shape_id = 1
-        while self.held_shape_id in self.board.used_shapes:
+        while self.held_shape_id in self.board.used_shapes and len(self.board.used_shapes) != 12:
             if self.held_shape_id < 12:
                 self.held_shape_id += 1
             else:
@@ -269,14 +328,14 @@ class Interface:
             self.held_shape_id -= 1
         else:
             self.held_shape_id = 12
-        while self.held_shape_id in self.board.used_shapes:
+        while self.held_shape_id in self.board.used_shapes and len(self.board.used_shapes) != 12:
             if self.held_shape_id > 1:
                 self.held_shape_id -= 1
             else:
                 self.held_shape_id = 12
         self.held_shape = Piece(self.held_shape_id)
 
-    def remove_shape(self, id:int) -> None:
+    def remove_shape(self, id: int) -> None:
         """
         Removes a shape from the board given its ID
         """
@@ -286,26 +345,34 @@ class Interface:
                 for y in range(len(self.board[x])):
                     if self.board[x][y] == id:
                         self.board[x][y] = 0
-    
-    def quit(self):
+
+    def back_to_main(self) -> None:
+        self.current_mode = "Main"
+
+    def launch(self) -> None:
+        self.current_mode = "Running"
+
+    def quit(self) -> None:
         self.isRunning = False
 
-    def isMouseInGrid(self) -> bool:
-        grid_rect = pg.Rect(self.GRID_OFFSET, (self.WIN_WIDTH, self.WIN_HEIGHT))
+    def is_mouse_in_grid(self) -> bool:
+        grid_rect = pg.Rect(self.grid_offset, (self.SCREEN.get_width(), self.SCREEN.get_height()))
         return grid_rect.collidepoint(self.mouse_pos)
-    
-    def drawWinScreen(self) -> None:
-        winRect = pg.Rect(self.WIN_WIDTH//4, self.WIN_HEIGHT//4, self.WIN_WIDTH//2, self.WIN_HEIGHT//2)
-        winRectBorder = pg.Rect(winRect.left-1, winRect.top-1, winRect.width+2, winRect.height+2)
-        pg.draw.rect(self.screen, self.Colors.WHITE, winRectBorder)
-        pg.draw.rect(self.screen, self.Colors.BLACK, winRect)
+
+    def draw_win_screen(self) -> None:
+        winRect = pg.Rect(self.SCREEN.get_width() // 4, self.SCREEN.get_height() // 4, self.SCREEN.get_width() // 2, self.SCREEN.get_height() // 2)
+        winRectBorder = pg.Rect(winRect.left - 1, winRect.top - 1, winRect.width + 2, winRect.height + 2)
+        pg.draw.rect(self.SCREEN, self.Colors.WHITE, winRectBorder)
+        pg.draw.rect(self.SCREEN, self.Colors.BLACK, winRect)
 
         # Draws the text
         text = pg.font.SysFont("verdana.ttf", 48)
         text_draw = text.render("The game is finished !", True, self.Colors.WHITE)
         text_draw_rect = text_draw.get_rect()
         text_draw_rect.center = winRect.center
-        self.screen.blit(text_draw, text_draw_rect)
+        self.SCREEN.blit(text_draw, text_draw_rect)
+
+
 
     def launch_thread(self, c):
         print("Tesst")
