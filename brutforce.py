@@ -74,7 +74,7 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
             i, j = next_position
         else:
             break
-    #ne sert a rien et vrai si l'entiereter du tapleau a ete parcour mais que toute les piece ne sont pas placer n'arrive normalement jamis
+    #ne sert a rien est vrai si l'entiereter du tapleau a ete parcour mais que toute les piece ne sont pas placer n'arrive normalement jamis
     if j == len(table[0]):
         # Toutes les cases ont été remplies, mais nous n'avons pas encore de solution.
         print("Pas de solution trouvée.")
