@@ -1,5 +1,4 @@
 import pygame as pg
-import threading
 import brutforce
 from button import Button
 from jeu import *
@@ -137,28 +136,29 @@ class Interface:
         self.game_finished = False
 
         self.current_mode = "Main"
-        self.button_font_size = 18 + self.square_size//4
+        self.button_font_size = 16 + self.square_size//5
 
         # The buttons for each state of the interface
         self.MENUS = {
             "Main": [
-                Button((Button.CENTERED, 1/3), (self.square_size*2, self.square_size), self.SCREEN,
+                Button((Button.CENTERED, 1/3),self.SCREEN,
                        callback=self.launch, text="Start",
-                       font_size=self.button_font_size, border_size=4),
+                       font_size=self.button_font_size * 3 // 2,
+                       padding=(20,20,20,20),border_size=4),
 
-                Button((Button.CENTERED, 2/3), (self.square_size*2, self.square_size), self.SCREEN,
+                Button((Button.CENTERED, 2/3),self.SCREEN,
                        callback=self.quit, text="Exit",
-                       font_size=self.button_font_size, border_size=4)
+                       font_size=self.button_font_size * 3 // 2,
+                       padding=(20,20,20,20),border_size=4)
             ],
             "Running": [
-                    Button((0.1, 0.1),
-                            (self.square_size, self.square_size // 2), self.SCREEN,
-                            callback=brutforce.launch_brutforce, callbak_args=(self,), text="Launch",
-                            font_size=self.button_font_size, border_size=4,border_color=self.Colors.GREEN),
+                Button((0.2, 0.1), self.SCREEN,
+                        callback=brutforce.launch_brutforce, callbak_args=(self,), text="Bruteforce",
+                        font_size=self.button_font_size, border_size=4,border_color=self.Colors.GREEN),
 
-                    Button((0.2, 0.1), (self.square_size, self.square_size // 2),
-                            self.SCREEN, callback=self.back_to_main, text="Quit", border_color=self.Colors.RED,
-                            font_size=self.button_font_size, border_size=4)
+                Button((0.4, 0.1), self.SCREEN,
+                        callback=self.back_to_main, text="Quit", border_color=self.Colors.RED,
+                        font_size=self.button_font_size, border_size=4)
             ]
         }
 
@@ -188,13 +188,14 @@ class Interface:
             if event.type == pg.MOUSEBUTTONDOWN:
                 if self.current_mode == "Running":
                     if event.button == pg.BUTTON_LEFT and self.is_mouse_in_grid():
+                        print("Click")
                         if self.can_place_shape():
                             self.place_shape()
                             self.inc_shape_ID()
                             if self.board.isFinished():
                                 self.game_finished = True
-                    if event.button == pg.BUTTON_RIGHT:
-                        id = self.board[self.pos_rectified[0]][self.pos_rectified[1]]
+                    if event.button == pg.BUTTON_RIGHT and self.is_mouse_in_grid():
+                        id = self.board[self.pos_rectified[1]][self.pos_rectified[0]]
                         self.remove_shape(id)
 
             if event.type == pg.VIDEORESIZE:
@@ -203,16 +204,21 @@ class Interface:
 
         if self.key_pressed(pg.K_ESCAPE):
             self.quit()
-        if keys[pg.K_LEFT] and keys[pg.K_LEFT] != self.previous_keys[pg.K_LEFT]:
-            self.inc_shape_ID()
-        if keys[pg.K_RIGHT] and  keys[pg.K_RIGHT] != self.previous_keys[pg.K_RIGHT]:
-            self.dec_shape_ID()
-        if keys[pg.K_r] and keys[pg.K_r] != self.previous_keys[pg.K_r]:
-            self.held_shape.turnClockwise()
-        if keys[pg.K_e] and keys[pg.K_e] != self.previous_keys[pg.K_e]:
-            self.held_shape.mirror()
-        if keys[pg.K_p] and keys[pg.K_p] != self.previous_keys[pg.K_p]:
-            brutforce.launch_brutforce(self)
+        if self.key_pressed(pg.K_F11):
+            self.fullscreen = not self.fullscreen
+            self.update_screen_mode()
+
+        if self.current_mode == "Running":
+            if self.key_pressed(pg.K_LEFT):
+                self.inc_shape_ID()
+            if self.key_pressed(pg.K_RIGHT):
+                self.dec_shape_ID()
+            if self.key_pressed(pg.K_r):
+                self.held_shape.turnClockwise()
+            if self.key_pressed(pg.K_e):
+                self.held_shape.mirror()
+            if self.key_pressed(pg.K_p):
+                brutforce.launch_brutforce(self)
 
         for but in self.MENUS[self.current_mode]:
             but.update()
@@ -357,6 +363,7 @@ class Interface:
 
     def is_mouse_in_grid(self) -> bool:
         grid_rect = pg.Rect(self.grid_offset, (self.SCREEN.get_width(), self.SCREEN.get_height()))
+        print(grid_rect)
         return grid_rect.collidepoint(self.mouse_pos)
 
     def draw_win_screen(self) -> None:
@@ -366,19 +373,13 @@ class Interface:
         pg.draw.rect(self.SCREEN, self.Colors.BLACK, winRect)
 
         # Draws the text
-        text = pg.font.SysFont("verdana.ttf", 48)
+        text = pg.font.SysFont("Sans Serif.ttf", 48)
         text_draw = text.render("The game is finished !", True, self.Colors.WHITE)
         text_draw_rect = text_draw.get_rect()
         text_draw_rect.center = winRect.center
         self.SCREEN.blit(text_draw, text_draw_rect)
 
 
-
-    def launch_thread(self, c):
-        print("Tesst")
-        time.sleep(2)
-        print("Tesst")
-        
 
 
 if __name__ == "__main__":

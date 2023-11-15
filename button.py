@@ -5,20 +5,19 @@ class Button:
     CENTERED = 1/2
 
     def __init__(self, pos:tuple[float,float],
-                 size:tuple[int,int],
                  surface:pg.Surface,
                  bg_color = (0,0,0),
                  text:str = None,
                  text_color = (255,255,255),
                  border_color = (255,255,255),
                  border_size:int = 1,
-                 font:str = "Sans Serif.ttf",
+                 font:str = "liberationmono",
                  font_size:int = 24,
                  font_alliasing:bool = True,
+                 padding :tuple[int,int,int,int] = (0,0,0,0),
                  callback = None,
                  callbak_args = ()):
-        
-        self.size = size
+    
         self.surface = surface
         self.bg_color = bg_color
         self.text = text
@@ -26,12 +25,16 @@ class Button:
         self.border_color = border_color
         self.border_size = border_size
         self.callback = callback
+        self.padding = padding
+        self.original_padding = padding
+        self.font_size = font_size
+        self.font_name = font
 
-
-        self.rect = pg.Rect(pos, size)
-        self.border = pg.Rect((pos[0]-border_size,pos[1]-border_size), (size[0]+border_size, size[1]+border_size))
-        self.font = pg.font.SysFont(font, font_size)
-        self.is_drawn = False
+        self.font = pg.font.SysFont(self.font_name, self.font_size)
+        font_space = self.font.size(self.text)
+        self.size = (self.padding[0] + self.padding[2] + font_space[0], self.padding[1] + self.padding[3] + font_space[1])
+        self.rect = pg.Rect(pos, self.size)
+        self.border = pg.Rect((pos[0]-border_size,pos[1]-border_size), (self.size[0]+border_size, self.size[1]+border_size))
         self.font_alliasing = font_alliasing
         self.pos = pos
         self.prev_state = False
@@ -58,6 +61,11 @@ class Button:
             
     
     def update(self) -> None:
+        while self.rect.width + self.padding[0] + self.padding[2] > self.surface.get_width() and self.padding[0] > 0:
+            self.padding = self.padding[0] - 1, self.padding[1] - 1, self.padding[2] - 1, self.padding[3] - 1
+            font_space = self.font.size(self.text)
+            self.size = (self.padding[0] + self.padding[2] + font_space[0], self.padding[1] + self.padding[3] + font_space[1])
+            self.rect = pg.Rect(self.pos, self.size)
         self.rect.center = (self.surface.get_width()*self.pos[0], self.surface.get_height()*self.pos[1])
 
 
