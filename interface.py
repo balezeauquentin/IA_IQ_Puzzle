@@ -19,8 +19,6 @@ class Interface:
     DEFAULT_WIDTH = 1600
     DEFAULT_HEIGHT = 900
 
-
-
     # Couleurs (r,g,b)
     class Colors:
         RED = (220, 25, 0)
@@ -188,7 +186,6 @@ class Interface:
             if event.type == pg.MOUSEBUTTONDOWN:
                 if self.current_mode == "Running":
                     if event.button == pg.BUTTON_LEFT and self.is_mouse_in_grid():
-                        print("Click")
                         if self.can_place_shape():
                             self.place_shape()
                             self.inc_shape_ID()
@@ -262,9 +259,9 @@ class Interface:
     def draw_shapes(self) -> None:
         x, y = 0, 0
         for ligne in self.board:
-            for case in ligne:
-                if case != 0:
-                    self.draw_square(case, x, y)
+            for tile in ligne:
+                if tile != 0:
+                    self.draw_square(tile, x, y)
                 x += self.square_size
             x = 0
             y += self.square_size
@@ -363,7 +360,6 @@ class Interface:
 
     def is_mouse_in_grid(self) -> bool:
         grid_rect = pg.Rect(self.grid_offset, (self.SCREEN.get_width(), self.SCREEN.get_height()))
-        print(grid_rect)
         return grid_rect.collidepoint(self.mouse_pos)
 
     def draw_win_screen(self) -> None:

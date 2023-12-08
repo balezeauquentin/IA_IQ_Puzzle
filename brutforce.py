@@ -22,9 +22,17 @@ def case_isolee(plateau, ligne, colonne):
     return True  # Toutes les cases voisines sont différentes de zéro, la case est isolée
 
 
-def table_a_des_cases_isolees(plateau):
-    return True
-
+#TODO: JE sais pas si c'est utile ça
+def tableau_valide(board : jeu.Board) -> bool:
+    board_is_valid = True
+    # Le tableau est invalide si il existe au moins un endroit ou aucune piece restante ne peut rentrer
+    for y in range(len(board)):
+        for x in range(len(board[y])):
+            if case_isolee(board, y, x) : return False
+            
+            
+        
+    return board_is_valid
 
 def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
     # quand une solution est trouver

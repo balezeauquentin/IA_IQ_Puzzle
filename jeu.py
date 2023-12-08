@@ -175,6 +175,11 @@ class Piece:
         return len(self.piece)
     def __getitem__(self, item):
         return self.piece[item]
+    def __eq__(self, __value: object) -> bool:
+        for y in range(self):
+            for x in range(self[y]):
+                if x != y: return False
+        return True
             
     def turnClockwise(self):
         self.piece = [list(reversed(col)) for col in zip(*self.piece)]
