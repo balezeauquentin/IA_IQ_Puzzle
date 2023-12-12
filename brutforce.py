@@ -1,6 +1,9 @@
 import jeu
 import interface
 import threading
+import time
+
+lock = threading.Lock()
 
 
 def case_isolee(plateau, ligne, colonne):
@@ -34,7 +37,7 @@ def tableau_valide(board : jeu.Board) -> bool:
         
     return board_is_valid
 
-def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
+def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
     # quand une solution est trouver
     if 0 not in used_pieces:
         # Toutes les pièces ont été utilisées, nous avons une solution.
@@ -118,8 +121,11 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
 
                         affichage.board.board = temp_table.board
                         # threade=threading.Thread(target=brutforce,args=(affichage,updated_used_pieces,temp_table,next_position))
-                        brutforce(affichage, updated_used_pieces, temp_table, next_position)
-                        # threade.run()
+                        #brutforcefct(affichage, updated_used_pieces, temp_table, next_position)
+                        t = threading.Thread(target=brutforcefct,args=(affichage, updated_used_pieces, temp_table, next_position))
+                        t.start()
+                        t.join()
+                        
                         affichage.remove_shape(piece_id)        
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
@@ -128,6 +134,7 @@ def brutforce(affichage: interface.Interface, used_pieces, table, position=(0, 0
                     current_piece.mirror()
                 else:
                     break
+        
 
 
 def launch_brutforce(a: interface.Interface):
@@ -137,9 +144,22 @@ def launch_brutforce(a: interface.Interface):
         for val in ligne:
             if val != 0:
                 used_pieces[val - 1] = 1
-    petitpeton = threading.Thread(target=brutforce,args=(a, used_pieces, b))
+    petitpeton = threading.Thread(target=brutforcefct,args=(a, used_pieces, b))
     petitpeton.daemon = True
+
+    start = time.time()
+ 
+
+ 
+    
+ 
+    # print the difference between start 
+    # and end time in milli. secs
+    
     petitpeton.start()
+    # record end time
+    end = time.time()
+    print("The time of execution of above program is :",(end-start) * 10**3, "ms")
     print("fin de recherche")
 
 
@@ -148,4 +168,4 @@ def launch_brutforce(a: interface.Interface):
 
 if __name__ == "__main__":
     a = interface.Interface()
-    brutforce(a, [0 for _ in range(12)], a.board)
+    brutforcefct(a, [0 for _ in range(12)], a.board)
