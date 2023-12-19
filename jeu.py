@@ -182,6 +182,11 @@ class Piece:
     def mirror(self):
         for line in self.piece:
             line.reverse()
+    def remove_shape(self,shape_id):
+        for a in range(len(self.piece)):
+            for b in range(len(self.piece[0])):
+                if self.piece[a][b]==shape_id:
+                    self.piece[a][b]=0
 
 
 
