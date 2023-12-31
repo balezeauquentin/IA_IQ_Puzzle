@@ -24,6 +24,13 @@ def case_isolee(plateau, ligne, colonne):
 
     return True  # Toutes les cases voisines sont différentes de zéro, la case est isolée
 
+def verife_case_isolee(table):
+    for ligne in range(len(table)):
+        for colone in range(len(table[0])):
+            if table[ligne][colone]==0:
+                if case_isolee(table,ligne,colone):
+                    return False
+    return True
 
 #TODO: JE sais pas si c'est utile ça
 def tableau_valide(board : jeu.Board) -> bool:
@@ -37,6 +44,21 @@ def tableau_valide(board : jeu.Board) -> bool:
         
     return board_is_valid
 
+
+def avancer_case_vide(table,position):
+    i, j = position
+    while i < len(table):
+        if table[i][j] != 0:
+            # Cette case est déjà occupée, passons à la suivante.
+            next_position = (i + 1, j)
+            if next_position[0] == len(table):
+                next_position = (0, j + 1)
+            i, j = next_position
+        else:
+            break
+    return i , j
+
+
 def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
     # quand une solution est trouver
     if 0 not in used_pieces:
@@ -48,43 +70,11 @@ def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0
         return
 
     #on verifie si il y a pas une case isolé presente sur le tableau
-    for ligne in range(len(table)):
-        for colone in range(len(table[0])):
-            if table[ligne][colone]==0:
-                if case_isolee(table,ligne,colone):
-                    return False
-
-            #sert a rien mais doit normalement chercher si il y a une case vide avant la position rentrer dans la fonction n'arrive normalement jamais
-    # a = 0
-    # b = 0
-    # while b != position[0] or a != position[1]:
-    #     if table[b][a] == 0:
-    #         for idpiece in range(1, 13):
-    #             for _ in range(2):
-    #                 for _ in range(4):
-    #                     if table.canPlaceShape(jeu.Piece(idpiece), (b, a)):
-    #                         table.placeShape(jeu.Piece(idpiece), (b, a))
-    #                         used_pieces[idpiece - 1] = 1
-    #                         return True
-    #                 jeu.Piece(idpiece).turnClockwise()
-    #             jeu.Piece(idpiece).mirror()
-    #         return False
-    #     b = b + 1
-    #     if b == len(table):
-    #         b = 0
-    #         a = a + 1
-
+    if not verife_case_isolee(table):
+        return False
     #avance de la position jusqu'a la prochaine case vide
-    i, j = position
-    while i < len(table):
-        if table[i][j] != 0:
-            # Cette case est déjà occupée, passons à la suivante.
-            next_position = (i + 1, j)
-            if next_position[0] == len(table):
-                next_position = (0, j + 1)
-            i, j = next_position
-        else:
-            break
+    i,j=avancer_case_vide(table,position)
+
     #ne sert a rien est vrai si l'entiereter du tapleau a ete parcour mais que toute les piece ne sont pas placer n'arrive normalement jamis
     if j == len(table[0]):
         # Toutes les cases ont été remplies, mais nous n'avons pas encore de solution.
@@ -135,7 +125,25 @@ def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0
                 else:
                     break
         
-
+         #sert a rien mais doit normalement chercher si il y a une case vide avant la position rentrer dans la fonction n'arrive normalement jamais
+    # a = 0
+    # b = 0
+    # while b != position[0] or a != position[1]:
+    #     if table[b][a] == 0:
+    #         for idpiece in range(1, 13):
+    #             for _ in range(2):
+    #                 for _ in range(4):
+    #                     if table.canPlaceShape(jeu.Piece(idpiece), (b, a)):
+    #                         table.placeShape(jeu.Piece(idpiece), (b, a))
+    #                         used_pieces[idpiece - 1] = 1
+    #                         return True
+    #                 jeu.Piece(idpiece).turnClockwise()
+    #             jeu.Piece(idpiece).mirror()
+    #         return False
+    #     b = b + 1
+    #     if b == len(table):
+    #         b = 0
+    #         a = a + 1
 
 def launch_brutforce(a: interface.Interface):
     b = a.board
