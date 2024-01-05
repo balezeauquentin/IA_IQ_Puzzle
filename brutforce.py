@@ -12,40 +12,25 @@ def case_isolee(plateau, ligne, colonne):
 
     # Vérifie si **toutes** les cases voisines sont différentes de zéro
     for voisin_ligne, voisin_colonne in voisins:
-        # if (
-        #         len(plateau) > voisin_ligne >= 0 == plateau[voisin_ligne][voisin_colonne] and  # Vérifie si les coordonnées sont dans les limites du plateau
-        #         0 <= voisin_colonne < len(plateau[0])
-        # ):
-        #     return False
+
         if len(plateau) > voisin_ligne >= 0 and 0 <= voisin_colonne < len(plateau[0]):
-            if plateau[voisin_ligne][voisin_colonne]==0:
+            if plateau[voisin_ligne][voisin_colonne] == 0:
                 return False
-              # Il y a au moins une case vide à proximité, la case n'est pas isolée
+            # Il y a au moins une case vide à proximité, la case n'est pas isolée
 
     return True  # Toutes les cases voisines sont différentes de zéro, la case est isolée
+
 
 def verife_case_isolee(table):
     for ligne in range(len(table)):
         for colone in range(len(table[0])):
-            if table[ligne][colone]==0:
-                if case_isolee(table,ligne,colone):
+            if table[ligne][colone] == 0:
+                if case_isolee(table, ligne, colone):
                     return False
     return True
 
-#TODO: JE sais pas si c'est utile ça
-def tableau_valide(board : jeu.Board) -> bool:
-    board_is_valid = True
-    # Le tableau est invalide si il existe au moins un endroit ou aucune piece restante ne peut rentrer
-    for y in range(len(board)):
-        for x in range(len(board[y])):
-            if case_isolee(board, y, x) : return False
-            
-            
-        
-    return board_is_valid
 
-
-def avancer_case_vide(table,position):
+def avancer_case_vide(table, position):
     i, j = position
     while i < len(table):
         if table[i][j] != 0:
@@ -56,7 +41,7 @@ def avancer_case_vide(table,position):
             i, j = next_position
         else:
             break
-    return i , j
+    return i, j
 
 
 def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
@@ -67,32 +52,23 @@ def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0
         plateau_solution = jeu.Board(len(table), len(table[0]))
         plateau_solution.board = table
         plateau_solution.printBoard()
-        return
+        return True
 
-    #on verifie si il y a pas une case isolé presente sur le tableau
+    # on verifie si il y a pas une case isolé presente sur le tableau
     if not verife_case_isolee(table):
         return False
-    #avance de la position jusqu'a la prochaine case vide
-    i,j=avancer_case_vide(table,position)
+    # avance de la position jusqu'a la prochaine case vide
+    i, j = avancer_case_vide(table, position)
+    # placement des piece
 
-    #ne sert a rien est vrai si l'entiereter du tapleau a ete parcour mais que toute les piece ne sont pas placer n'arrive normalement jamis
-    if j == len(table[0]):
-        # Toutes les cases ont été remplies, mais nous n'avons pas encore de solution.
-        print("Pas de solution trouvée.")
-        return
 
-    #placement des piece
     temp_table = jeu.Board(len(table), len(table[0]))
     temp_table.board = [row[:] for row in table]
     for piece_id in range(1, 13):  # Mise à jour pour 12 pièces
         if used_pieces[piece_id - 1] == 0:
             current_piece = jeu.Piece(piece_id)  # Renomme la variable pour éviter le conflit de noms
             for _ in range(2):
-                if piece_id == 7:
-                    t = 2
-                else:
-                    t = 4
-                for _ in range(t):
+                for _ in range(current_piece.rotation):
                     position = i, j
                     m = 0
                     while current_piece[m][0] == 0:
@@ -111,12 +87,13 @@ def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0
 
                         affichage.board.board = temp_table.board
                         # threade=threading.Thread(target=brutforce,args=(affichage,updated_used_pieces,temp_table,next_position))
-                        #brutforcefct(affichage, updated_used_pieces, temp_table, next_position)
-                        t = threading.Thread(target=brutforcefct,args=(affichage, updated_used_pieces, temp_table, next_position))
+                        # brutforcefct(affichage, updated_used_pieces, temp_table, next_position)
+                        t = threading.Thread(target=brutforcefct,
+                                             args=(affichage, updated_used_pieces, temp_table, next_position))
                         t.start()
                         t.join()
-                        
-                        affichage.remove_shape(piece_id)        
+
+                        affichage.remove_shape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
                     current_piece.turnClockwise()
@@ -124,26 +101,7 @@ def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0
                     current_piece.mirror()
                 else:
                     break
-        
-         #sert a rien mais doit normalement chercher si il y a une case vide avant la position rentrer dans la fonction n'arrive normalement jamais
-    # a = 0
-    # b = 0
-    # while b != position[0] or a != position[1]:
-    #     if table[b][a] == 0:
-    #         for idpiece in range(1, 13):
-    #             for _ in range(2):
-    #                 for _ in range(4):
-    #                     if table.canPlaceShape(jeu.Piece(idpiece), (b, a)):
-    #                         table.placeShape(jeu.Piece(idpiece), (b, a))
-    #                         used_pieces[idpiece - 1] = 1
-    #                         return True
-    #                 jeu.Piece(idpiece).turnClockwise()
-    #             jeu.Piece(idpiece).mirror()
-    #         return False
-    #     b = b + 1
-    #     if b == len(table):
-    #         b = 0
-    #         a = a + 1
+
 
 def launch_brutforce(a: interface.Interface):
     b = a.board
@@ -152,26 +110,16 @@ def launch_brutforce(a: interface.Interface):
         for val in ligne:
             if val != 0:
                 used_pieces[val - 1] = 1
-    petitpeton = threading.Thread(target=brutforcefct,args=(a, used_pieces, b))
-    petitpeton.daemon = True
-
+    thread_brute_force = threading.Thread(target=brutforcefct, args=(a, used_pieces, b))
+    thread_brute_force.daemon = True
     start = time.time()
- 
-
- 
-    
- 
     # print the difference between start 
     # and end time in milli. secs
-    
-    petitpeton.start()
+    thread_brute_force.start()
     # record end time
     end = time.time()
-    print("The time of execution of above program is :",(end-start) * 10**3, "ms")
+    print("The time of execution of above program is :", (end - start) * 10 ** 3, "ms")
     print("fin de recherche")
-
-
-    #brutforce(a, used_pieces, b)
 
 
 if __name__ == "__main__":
