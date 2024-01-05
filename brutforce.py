@@ -81,18 +81,13 @@ def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0
                         next_position = (i + 1, j)
                         if next_position[0] == len(table):
                             next_position = (0, j + 1)
-
                         updated_used_pieces = used_pieces[:]
                         updated_used_pieces[piece_id - 1] = 1
-
                         affichage.board.board = temp_table.board
-                        # threade=threading.Thread(target=brutforce,args=(affichage,updated_used_pieces,temp_table,next_position))
-                        # brutforcefct(affichage, updated_used_pieces, temp_table, next_position)
                         t = threading.Thread(target=brutforcefct,
                                              args=(affichage, updated_used_pieces, temp_table, next_position))
                         t.start()
                         t.join()
-
                         affichage.remove_shape(piece_id)
                         used_pieces[piece_id - 1] = 0
                         temp_table.board = [row[:] for row in table]
