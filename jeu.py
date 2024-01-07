@@ -2,23 +2,63 @@
 class Board:
     used_shapes = []
     def __init__(self, height, width):
+        """
+        Initializes a new Board instance with a specified height and width.
+        The board is represented as a 2D list filled with zeros.
+
+        Parameters:
+        - height: The number of rows in the board.
+        - width: The number of columns in the board.
+        """
         self.height = height
         self.width = width
         self.board = [[0 for _ in range(width)] for _ in range(height)]
 
     def __copy__(self):
+        """
+        Creates a copy of the current Board instance.
+
+        Returns:
+        - A new Board instance with the same height and width.
+        """
         return Board(self.height, self.width)
 
     def __len__(self):
+        """
+        Returns the height of the board.
+
+        Returns:
+        - Integer: The height of the board.
+        """
         return self.height
     
     def __getitem__(self, i):
+        """
+        Allows access to a row of the board using subscript notation.
+
+        Parameters:
+        - i: The index of the row.
+
+        Returns:
+        - List: The row at index 'i'.
+        """
         return self.board[i]
     
     def __setitem__(self, i, val):
+        """
+        Allows setting a row of the board using subscript notation.
+
+        Parameters:
+        - i: The index of the row.
+        - val: The new value for the row.
+        """
         self.board[i] = val
 
     def printBoard(self):
+        """
+        Prints the board to the console. 
+        Empty cells are represented by '.', and filled cells are represented by letters.
+        """
         for i in range(self.height):
             for j in range(self.width):
                 if self.board[i][j] == 0:
@@ -29,6 +69,10 @@ class Board:
 
     # Fonction pour placer une pièce sur le plateau
     def placeShape(self, piece, position):
+        """
+        Prints the board to the console. 
+        Empty cells are represented by '.', and filled cells are represented by letters.
+        """
         if self.canPlaceShape(piece, position):
             self.used_shapes.append(piece.id)
             for i in range(len(piece.piece)):
@@ -43,6 +87,16 @@ class Board:
 
     # Fonction pour vérifier si une pièce peut être placée à un certain endroit
     def canPlaceShape(self, piece, position):
+        """
+        Checks if a given piece can be placed on the board at a specified position.
+
+        Parameters:
+        - piece: The piece to check.
+        - position: The top-left position to check for placement.
+
+        Returns:
+        - Boolean: True if the piece can be placed, False otherwise.
+        """
         if piece.id in self.used_shapes:
             return False
         for i in range(len(piece.piece)):
@@ -69,6 +123,13 @@ class Board:
 # Création d'une pièce (exemple avec une pièce en forme de L)
 class Piece:
     def __init__(self, id):
+        """
+        Initializes a new Piece instance with a specified ID.
+        Each ID corresponds to a different shape.
+
+        Parameters:
+        - id: The ID of the piece, determining its shape.
+        """
         self.id = id
 
         # Liste des pièces
@@ -183,10 +244,32 @@ class Piece:
             self.can_miror=False
             self.rotation = 4
     def __len__(self):
+        """
+        Returns the number of rows in the piece.
+
+        Returns:
+        - Integer: The number of rows in the piece.
+        """
         return len(self.piece)
     def __getitem__(self, item):
+        """
+        Allows access to an element of the piece using subscript notation.
+
+        Parameters:
+        - item: The index of the element.
+
+        Returns:
+        - The element of the piece at the specified index.
+        """
         return self.piece[item]
+    
     def __eq__(self, __value: object) -> bool:
+        """
+        Rotates the piece clockwise.
+
+        Notes:
+        - This method modifies the piece in place.
+        """
         for y in range(self):
             for x in range(self[y]):
                 if x != y: return False

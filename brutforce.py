@@ -4,12 +4,19 @@ import time
 
 lock = threading.Lock()
 
-## @brief This function checks if a cell is isolated
-# @param plateau The game board
-# @param ligne The row of the cell
-# @param colonne The column of the cell
-# @return True if the cell is isolated, False otherwise
 def case_isolee(plateau, ligne, colonne):
+    """
+    Determine if a cell (specified by its line and column) is isolated in the grid 'plateau'.
+    An isolated cell is defined as one that has no adjacent cells with a value of 0.
+    
+    Parameters:
+    - plateau: A 2D list representing the grid.
+    - ligne: The row index of the cell.
+    - colonne: The column index of the cell.
+    
+    Returns:
+    - Boolean: True if the cell is isolated, False otherwise.
+    """
     voisins = [(ligne - 1, colonne), (ligne + 1, colonne), (ligne, colonne - 1), (ligne, colonne + 1)]
     for voisin_ligne, voisin_colonne in voisins:
         if len(plateau) > voisin_ligne >= 0 and 0 <= voisin_colonne < len(plateau[0]):
@@ -17,10 +24,17 @@ def case_isolee(plateau, ligne, colonne):
                 return False
     return True
 
-## @brief This function checks if there is an isolated cell in the board
-# @param table The game board
-# @return True if there is no isolated cell, False otherwise
 def verife_case_isolee(table):
+    """
+    Check if any cell in a 2D list 'table' is isolated. 
+    It utilizes the 'case_isolee' function to check each cell.
+    
+    Parameters:
+    - table: A 2D list representing the grid.
+    
+    Returns:
+    - Boolean: False if any cell is isolated, True otherwise.
+    """
     for ligne in range(len(table)):
         for colone in range(len(table[0])):
             if table[ligne][colone] == 0:
@@ -28,11 +42,18 @@ def verife_case_isolee(table):
                     return False
     return True
 
-## @brief This function advances to the next empty cell
-# @param table The game board
-# @param position The current position
-# @return The position of the next empty cell
 def avancer_case_vide(table, position):
+    """
+    Finds the next position in the 'table' starting from 'position' that contains a zero (empty cell).
+    This function iteratively moves through the table until it finds an empty cell.
+
+    Parameters:
+    - table: A 2D list representing the grid.
+    - position: A tuple (i, j) representing the starting position in the grid.
+
+    Returns:
+    - Tuple: The position (i, j) of the next empty cell in the table.
+    """
     i, j = position
     while i < len(table):
         if table[i][j] != 0:
@@ -42,15 +63,22 @@ def avancer_case_vide(table, position):
             i, j = next_position
         else:
             break
-    return i, j
+    return i,
 
-## @brief This function finds a solution to the game using brute force
-# @param affichage The game interface
-# @param used_pieces The list of used pieces
-# @param table The game board
-# @param position The current position
-# @return True if a solution is found, False otherwise
 def brutforcefct(affichage, used_pieces, table, position=(0, 0)):
+    """
+    Implements a brute force algorithm to solve a puzzle represented by 'table'.
+    It tries placing different pieces on the table, checking for a complete solution.
+
+    Parameters:
+    - affichage: An object to manage the display of the board.
+    - used_pieces: A list indicating which pieces have been used.
+    - table: A 2D list representing the grid of the puzzle.
+    - position: The starting position for trying to place a piece.
+
+    Returns:
+    - Boolean: True if a solution is found, False otherwise.
+    """
     if 0 not in used_pieces:
         print("Solution trouvée:")
         plateau_solution = jeu.Board(len(table), len(table[0]))
@@ -93,9 +121,18 @@ def brutforcefct(affichage, used_pieces, table, position=(0, 0)):
                 else:
                     break
 
-## @brief This function launches the brute force algorithm
-# @param a The game interface
 def launch_brutforce(a):
+    """
+    Launches the brute force algorithm in a separate thread.
+    This function sets up the puzzle board and the list of used pieces,
+    then starts the brute force search in a new thread.
+
+    Parameters:
+    - a: An object representing the puzzle board.
+
+    Notes:
+    - The function also measures and prints the execution time of the algorithm.
+    """
     b = a.board
     used_pieces = [0 for _ in range(12)]
     for ligne in b:
