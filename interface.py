@@ -14,62 +14,32 @@ from jeu import *
 
 
 
-## @package interface
-#  This module contains the Interface class which is used to manage the game interface.
-
-## The Interface class is used to manage the game interface.
 class Interface:
-    ## The title of the game.
     TITLE = "IQ Puzzler"
-    ## The default width of the game window.
     DEFAULT_WIDTH = 1600
-    ## The default height of the game window.
     DEFAULT_HEIGHT = 900
 
-    ## The Colors class is used to manage the colors used in the game.
+    # Couleurs (r,g,b)
     class Colors:
-        ## The color red.
         RED = (220, 25, 0)
-        ## The color dark blue.
         DARK_BLUE = (20, 39, 150)
-        ## The color green.
         GREEN = (0, 255, 0)
-        ## The color magenta.
         MAGENTA = (255, 0, 255)
-        ## The color cyan.
         CYAN = (0, 255, 255)
-        ## The color yellow.
         YELLOW = (255, 255, 0)
-        ## The color pink.
         PINK = (255, 0, 192)
-        ## The color purple.
         PURPLE = (64, 0, 64)
-        ## The color orange.
         ORANGE = (255, 128, 0)
-        ## The color dark green.
         DARK_GREEN = (0, 255, 128)
-        ## The color grey.
         GREY = (128, 128, 128)
-        ## The color black.
         BLACK = (0, 0, 0)
-        ## The color lime green.
         LIME_GREEN = (150, 255, 50)
-        ## The color white.
         WHITE = (255, 255, 255)
-        ## The color light blue.
         LIGHT_BLUE = (150, 225, 255)
-        ## The color blue.
         BLUE = (100, 100, 255)
-        ## The color turquoise.
         TURQUOIZE = (0, 125, 125)
-        ## The color dark red.
         DARK_RED = (150, 0, 50)
-        ## The color dark grey.
         DARK_GREY = (64, 64, 64)
-
-        ## @brief Returns a color given the ID of a shape.
-        #  @param id The ID of the shape.
-        #  @return The color corresponding to the shape ID.
 
         def getColorFromID(id: int):
             """
@@ -134,6 +104,7 @@ class Interface:
                 color = Interface.Colors.WHITE
             else:
                 color = None
+
             return color
 
     def __init__(self, height: int = 5, width: int = 11) -> None:
