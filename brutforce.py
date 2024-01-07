@@ -1,5 +1,4 @@
 import jeu
-import interface
 import threading
 import time
 
@@ -51,7 +50,7 @@ def avancer_case_vide(table, position):
 # @param table The game board
 # @param position The current position
 # @return True if a solution is found, False otherwise
-def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0, 0)):
+def brutforcefct(affichage, used_pieces, table, position=(0, 0)):
     if 0 not in used_pieces:
         print("Solution trouvée:")
         plateau_solution = jeu.Board(len(table), len(table[0]))
@@ -96,7 +95,7 @@ def brutforcefct(affichage: interface.Interface, used_pieces, table, position=(0
 
 ## @brief This function launches the brute force algorithm
 # @param a The game interface
-def launch_brutforce(a: interface.Interface):
+def launch_brutforce(a):
     b = a.board
     used_pieces = [0 for _ in range(12)]
     for ligne in b:
@@ -110,7 +109,3 @@ def launch_brutforce(a: interface.Interface):
     end = time.time()
     print("The time of execution of above program is :", (end - start) * 10 ** 3, "ms")
     print("fin de recherche")
-
-if __name__ == "__main__":
-    a = interface.Interface()
-    brutforcefct(a, [0 for _ in range(12)], a.board)
