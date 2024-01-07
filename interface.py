@@ -1,17 +1,10 @@
+"""This module is responsible for enabling interactions between the user and the program while
+also displaying to the user what is happening with the algorithm"""
+
 import pygame as pg
 import brutforce
 from button import Button
 from jeu import *
-
-
-# TODO:
-# Ameliorer les graphismes
-# Resize les boutons
-# Ajouter un compteur de solutions
-# Ajouter une taille minimum a la fenetre
-
-
-
 
 
 ## @package interface
@@ -189,18 +182,22 @@ class Interface:
             ]
         }
 
+    # Calculates the offset to make the grid stay at the relativce center of the windo
     def calculate_offset(self) -> None:
         self.grid_offset = (self.SCREEN.get_width() - self.square_size * self.board.width,
                        self.SCREEN.get_height() - self.square_size * self.board.height - self.top_space)
 
+    # Calculates the size of the cells of the grid to be able to adapt with window resizing 
     def calculate_square_size(self) -> None:
         self.square_size = self.SCREEN.get_width() // self.board.width
 
     def can_place_shape(self) -> bool:
         return self.board.canPlaceShape(self.held_shape, (self.pos_rectified[1], self.pos_rectified[0]))
 
+    
     def place_shape(self) -> None:
         self.board.placeShape(self.held_shape, (self.pos_rectified[1], self.pos_rectified[0]))
+
 
     def update_events(self) -> None:
         """
@@ -209,9 +206,11 @@ class Interface:
         self.mouse_pos = pg.mouse.get_pos()
         self.pos_rectified = self.rectify_mouse_position()
         self.keys = pg.key.get_pressed()
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.isRunning = False
+
             if event.type == pg.MOUSEBUTTONDOWN:
                 if self.current_mode == "Running":
                     if event.button == pg.BUTTON_LEFT and self.is_mouse_in_grid():
@@ -230,6 +229,7 @@ class Interface:
 
         if self.key_pressed(pg.K_ESCAPE):
             self.quit()
+
         if self.key_pressed(pg.K_F11):
             self.fullscreen = not self.fullscreen
             self.update_screen_mode()
@@ -251,9 +251,11 @@ class Interface:
 
         self.previous_keys = self.keys
 
+    # Returns true when a key is first pressed and not when held
     def key_pressed(self, key: int):
         return self.keys[key] and self.keys[key] != self.previous_keys[key]
 
+    # Adapts the displaying of the grid when transitionning to fullscreen and back
     def update_screen_mode(self):
         if self.fullscreen:
             self.previous_h = self.SCREEN.get_height()
@@ -266,6 +268,7 @@ class Interface:
         self.calculate_square_size()
         self.calculate_offset()
 
+    # Draws the everything that can be seen on the interface
     def draw(self) -> None:
         """
         Called once every frame
@@ -275,9 +278,6 @@ class Interface:
             self.draw_shapes()
             self.draw_preview()
             self.draw_grid()
-
-            if self.game_finished:
-                self.draw_win_screen()
         
         for but in self.MENUS[self.current_mode]:
             but.draw()
@@ -315,6 +315,7 @@ class Interface:
         square = pg.Rect(x + self.grid_offset[0] // 2, y + self.grid_offset[1]//2 + self.top_space, self.square_size, self.square_size)
         pg.draw.rect(self.SCREEN, Interface.Colors.getColorFromID2(squareID), square)
 
+    # Draws the preview of the shape when it can be placed where the mouse is postioned
     def draw_preview(self) -> None:
         if not self.can_place_shape():
             return
@@ -334,6 +335,7 @@ class Interface:
                                     )
                     )
 
+    # Normalises the mouse position on the window to coordiantes on the grid ex: (1920,1080) => (11,5)
     def rectify_mouse_position(self) -> tuple[int, int]:
         """
         Transforms the mouse position into something that makes it easy to index into the grid
@@ -343,6 +345,7 @@ class Interface:
                     (mouse_pos[1] - self.grid_offset[1]//2 - self.top_space) // self.square_size)
         return rectified
 
+    # Changes the currently previewed and held shape
     def inc_shape_ID(self) -> None:
         if self.held_shape_id < 12:
             self.held_shape_id += 1
@@ -355,6 +358,7 @@ class Interface:
                 self.held_shape_id = 1
         self.held_shape = Piece(self.held_shape_id)
 
+    # Changes the currently previewed and held shape
     def dec_shape_ID(self) -> None:
         if self.held_shape_id > 1:
             self.held_shape_id -= 1
@@ -367,6 +371,7 @@ class Interface:
                 self.held_shape_id = 12
         self.held_shape = Piece(self.held_shape_id)
 
+    # If a shape is placed under the mouse when the user right clicks
     def remove_shape(self, id: int) -> None:
         """
         Removes a shape from the board given its ID
@@ -378,39 +383,18 @@ class Interface:
                     if self.board[x][y] == id:
                         self.board[x][y] = 0
 
+    # Changes the menu to the main menu
     def back_to_main(self) -> None:
         self.current_mode = "Main"
 
+    # Changes the menu to the game menu
     def launch(self) -> None:
         self.current_mode = "Running"
 
     def quit(self) -> None:
         self.isRunning = False
 
+    # Returns if the mouse cursor postion is in the displayed grid
     def is_mouse_in_grid(self) -> bool:
         grid_rect = pg.Rect(self.grid_offset, (self.SCREEN.get_width(), self.SCREEN.get_height()))
         return grid_rect.collidepoint(self.mouse_pos)
-
-    def draw_win_screen(self) -> None:
-        #winRect = pg.Rect(self.SCREEN.get_width() // 4, self.SCREEN.get_height() // 4, self.SCREEN.get_width() // 2, self.SCREEN.get_height() // 2)
-        #winRectBorder = pg.Rect(winRect.left - 1, winRect.top - 1, winRect.width + 2, winRect.height + 2)
-        #pg.draw.rect(self.SCREEN, self.Colors.WHITE, winRectBorder)
-        #pg.draw.rect(self.SCREEN, self.Colors.BLACK, winRect)
-
-        # Draws the text
-        text = pg.font.SysFont("Sans Serif.ttf", 48)
-        #text_draw = text.render("The game is finished !", True, self.Colors.WHITE)
-        #text_draw_rect = text_draw.get_rect()
-        #text_draw_rect.center = winRect.center
-        #self.SCREEN.blit(text_draw, text_draw_rect)
-
-
-
-
-if __name__ == "__main__":
-    pg.init()
-    inte = Interface()
-    pg.time.Clock().tick(60)
-    while inte.isRunning:
-        inte.update_events()
-        inte.draw()
