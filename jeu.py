@@ -264,21 +264,21 @@ class Piece:
         return self.piece[item]
     
     def __eq__(self, __value: object) -> bool:
-        """
-        Rotates the piece clockwise.
-
-        Notes:
-        - This method modifies the piece in place.
-        """
         for y in range(self):
             for x in range(self[y]):
                 if x != y: return False
         return True
             
     def turnClockwise(self):
+        """
+        Rotates the piece clockwise.
+        """
         self.piece = [list(reversed(col)) for col in zip(*self.piece)]
 
     def mirror(self):
+        """
+        Reverse the piece. 
+        """
         for line in self.piece:
             line.reverse()
 

@@ -5,18 +5,18 @@ class Button:
     CENTERED = 1/2
 
     def __init__(self, pos:tuple[float,float],
-                 surface:pg.Surface,
-                 bg_color = (0,0,0),
-                 text:str = None,
-                 text_color = (255,255,255),
-                 border_color = (255,255,255),
-                 border_size:int = 1,
-                 font:str = "liberationmono",
-                 font_size:int = 24,
-                 font_alliasing:bool = True,
-                 padding :tuple[int,int,int,int] = (0,0,0,0),
-                 callback = None,
-                 callbak_args = ()):
+        surface:pg.Surface,
+        bg_color = (0,0,0),
+        text:str = None,
+        text_color = (255,255,255),
+        border_color = (255,255,255),
+        border_size:int = 1,
+        font:str = "liberationmono",
+        font_size:int = 24,
+        font_alliasing:bool = True,
+        padding :tuple[int,int,int,int] = (0,0,0,0),
+        callback = None,
+        callbak_args = ()):
     
         self.surface = surface
         self.bg_color = bg_color
