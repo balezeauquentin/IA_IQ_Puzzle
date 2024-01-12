@@ -186,6 +186,7 @@ class Interface:
             if event.type == pg.MOUSEBUTTONDOWN:
                 if self.current_mode == "Running":
                     if event.button == pg.BUTTON_LEFT and self.is_mouse_in_grid():
+                        print("Click")
                         if self.can_place_shape():
                             self.place_shape()
                             self.inc_shape_ID()
@@ -360,6 +361,7 @@ class Interface:
 
     def is_mouse_in_grid(self) -> bool:
         grid_rect = pg.Rect(self.grid_offset, (self.SCREEN.get_width(), self.SCREEN.get_height()))
+        print(grid_rect)
         return grid_rect.collidepoint(self.mouse_pos)
 
     def draw_win_screen(self) -> None:
